@@ -1,0 +1,278 @@
+﻿#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+#include "imgui_internal.h"
+#include "implot.h"
+#include "implot3d.h"
+#include "font.h"
+#include "math.h"
+
+#include<iostream>
+#include<glad/glad.h>
+#include<GLFW/glfw3.h>
+#include<string>
+
+
+// Vertex Shader source code
+const char* vertexShaderSource = "#version 330 core\n"
+"layout (location = 0) in vec3 aPos;\n"
+"void main()\n"
+"{\n"
+"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"}\0";
+//Fragment Shader source code
+const char* fragmentShaderSource = "#version 330 core\n"
+"out vec4 FragColor;\n"
+"void main()\n"
+"{\n"
+"   FragColor = vec4(0.8f, 0.3f, 0.02f, 1.0f);\n"
+"}\n\0";
+	
+
+
+int main() 
+{
+	glfwInit();
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	int width = 800;
+	int height = 600;
+
+	GLFWwindow* window = glfwCreateWindow(width, height, "YoutubeOpenGL", NULL, NULL);
+	if (window == NULL)
+	{
+		std::cout << "Failed to create GLFW window" << std::endl;
+		glfwTerminate();
+		return -1;
+	}
+	glfwMakeContextCurrent(window);
+	gladLoadGL();
+	// In this case the viewport goes from x = 0, y = 0, to x = 800, y = 800
+	glViewport(0, 0, width, height);
+
+
+
+	// Create Vertex Shader Object and get its reference
+	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	// Attach Vertex Shader source to the Vertex Shader Object
+	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+	// Compile the Vertex Shader into machine code
+	glCompileShader(vertexShader);
+
+	// Create Fragment Shader Object and get its reference
+	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	// Attach Fragment Shader source to the Fragment Shader Object
+	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+	// Compile the Vertex Shader into machine code
+	glCompileShader(fragmentShader);
+
+	// Create Shader Program Object and get its reference
+	GLuint shaderProgram = glCreateProgram();
+	// Attach the Vertex and Fragment Shaders to the Shader Program
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	// Wrap-up/Link all the shaders together into the Shader Program
+	glLinkProgram(shaderProgram);
+
+	// Delete the now useless Vertex and Fragment Shader objects
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+
+
+
+	// Vertices coordinates
+	GLfloat vertices[] =
+	{
+		-0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower left corner
+		0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower right corner
+		0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f // Upper corner
+	};
+
+	// Create reference containers for the Vartex Array Object and the Vertex Buffer Object
+	GLuint VAO, VBO;
+
+	// Generate the VAO and VBO with only 1 object each
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+
+	// Make the VAO the current Vertex Array Object by binding it
+	glBindVertexArray(VAO);
+
+	// Bind the VBO specifying it's a GL_ARRAY_BUFFER
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	// Introduce the vertices into the VBO
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	// Configure the Vertex Attribute so that OpenGL knows how to read the VBO
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	// Enable the Vertex Attribute so that OpenGL knows to use it
+	glEnableVertexAttribArray(0);
+
+	// Bind both the VBO and VAO to 0 so that we don't accidentally modify the VAO and VBO we created
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+	IMGUI_CHECKVERSION();
+
+	// Initialize ImGUI
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImPlot::CreateContext();
+	ImPlot3D::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGuiStyle* style = &ImGui::GetStyle();
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // แนะนำให้เปิดถ้าต้องการ Docking
+	ImGui::StyleColorsDark();
+	ImPlot::StyleColorsDark();
+	ImPlot3D::StyleColorsDark();
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init("#version 330");
+
+	ImFontConfig font_cfg;
+	font_cfg.FontDataOwnedByAtlas = false;
+	io.Fonts->AddFontFromMemoryTTF(
+		cascadiacode,
+		cascadiacodesize,
+		17.0f,
+		&font_cfg,
+		io.Fonts->GetGlyphRangesThai()
+	);
+
+	bool test_window = true;
+	bool show_my_window = false;
+	bool show_imgui_demo = false;
+	bool show_impolot_demo = false;
+	bool show_implot3d_demo = false;
+	bool show_my_plot = false;
+
+	bool config_window = true;
+	// Main while loop
+	while (!glfwWindowShouldClose(window))
+	{
+		// Specify the color of the background
+		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
+		// Clean the back buffer and assign the new color to it
+		glClear(GL_COLOR_BUFFER_BIT);
+		// Tell OpenGL which Shader Program we want to use
+		glUseProgram(shaderProgram);
+		// Bind the VAO so OpenGL knows to use it
+		glBindVertexArray(VAO);
+		// Draw the triangle using the GL_TRIANGLES primitive
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		if (test_window)
+		{
+			if (ImGui::Begin("test the Window", &test_window))
+			{
+				ImGui::Text("another demo window");
+				ImGui::Checkbox("imgui demo", &show_imgui_demo);
+				if (show_imgui_demo)
+				{
+					ImGui::ShowDemoWindow(&show_imgui_demo);
+				}
+
+				ImGui::Checkbox("implot demo", &show_impolot_demo);
+				if (show_impolot_demo)
+				{
+					ImPlot::ShowDemoWindow(&show_impolot_demo);
+				}
+
+				ImGui::Checkbox("implot 3D demo", &show_implot3d_demo);
+				if (show_implot3d_demo)
+				{
+					ImPlot3D::ShowDemoWindow(&show_implot3d_demo);
+				}
+
+				ImGui::Checkbox("my window", &show_my_window);
+				if (show_my_window)
+				{
+					if (ImGui::Begin("plot boob", &show_my_window))
+					{
+						if (ImPlot3D::BeginPlot("test"))
+						{
+							
+						}
+						ImPlot3D::EndPlot();
+					}
+					ImGui::End();
+				}
+
+				ImGui::Checkbox("myplot", &show_my_plot);
+				if (show_my_plot)
+				{
+					if (ImGui::Begin("plot test", &show_my_plot))
+					{
+						if (ImPlot::BeginPlot("Dynamic GeoGebra Style")) {
+							ImPlot::SetupAxes("x", "f(x)");
+
+							// 1. ถาม ImPlot ว่า ตอนนี้หน้าจอกำลังโชว์ x ตั้งแต่เท่าไหร่ถึงเท่าไหร่
+							ImPlotRect limits = ImPlot::GetPlotLimits();
+							double x_min = limits.X.Min;
+							double x_max = limits.X.Max;
+
+							// 2. สร้างข้อมูลเฉพาะในช่วงที่มองเห็น (เช่น แบ่งเป็น 500 จุดเสมอ ไม่ว่าซูมเข้าหรือออก)
+							static float x_data[500], y_data[500];
+							for (int i = 0; i < 500; ++i) {
+								x_data[i] = x_min + (i * (x_max - x_min) / 499.0);
+								y_data[i] = x_data[i]; // สูตร f(x) = x
+							}
+
+							// 3. วาดกราฟ
+							ImPlot::PlotLine("f(x) = x", x_data, y_data, 500);
+
+							ImPlot::EndPlot();
+						}
+					}
+					ImGui::End();
+				}
+			}
+			ImGui::End();
+		}
+
+		if (config_window)	
+		{
+			ImGui::Begin("Rs config");
+			ImGui::TextWrapped("Hello World, This is my personal project that i make it like my hobby. i like to watch behind the sence in many different game");
+			char buffer[256] = "";
+			ImGui::InputText("Text",buffer,sizeof(buffer));
+			ImGui::TextWrapped("Hello, World!");
+			float value = 1.23f;
+			ImGui::TextWrapped("The value is: %f",value);
+			ImGui::TextLinkOpenURL("https://bkwschool.ac.th/");
+
+
+			ImGui::End();
+		}
+
+		
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		// Swap the back buffer with the front buffer
+		glfwSwapBuffers(window);
+		// Take care of all GLFW events
+		glfwPollEvents();
+	}
+
+	// Deletes all ImGUI instances
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+	ImPlot::DestroyContext();
+	ImPlot3D::DestroyContext();
+
+	// Delete all the objects we've created
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteProgram(shaderProgram);
+	glfwDestroyWindow(window);
+	glfwTerminate();
+	return 0;
+}
