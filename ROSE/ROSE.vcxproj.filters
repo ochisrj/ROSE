@@ -52,6 +52,9 @@
     <ClCompile Include="Micfont.h">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="test.cpp">
+      <Filter>Source Files\debugCs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h" />
@@ -110,6 +113,9 @@
     </Filter>
     <Filter Include="Source Files\imgui">
       <UniqueIdentifier>{ef8fafb0-820b-4125-b59c-4e3c38f89ef2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\debugCs">
+      <UniqueIdentifier>{54c4e5f7-5529-454b-b981-288845d3c251}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
