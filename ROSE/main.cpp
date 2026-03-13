@@ -153,16 +153,8 @@ int main()
             ImGui::TextColored(ImVec4(0, 1, 0, 1), " (V) ");
             ImGui::SameLine();
             ImGui::Text("System Online");
-
-            // Warning/Error Status
-            ImGui::TextColored(ImVec4(1, 0, 0, 1), " [!] ");
-            ImGui::SameLine();
-            ImGui::Text("Invalid Formula Detected");
-
-
-
+            ImGui::Text("test updare");
             ImGui::End();
-
         }
 
 
@@ -224,7 +216,7 @@ int main()
             float value = 1.23f;
             ImGui::TextWrapped("The value is: %f", value);
             ImGui::TextLinkOpenURL("https://bkwschool.ac.th/");
-
+            ImGui::Text("test update");
 
             ImGui::End();
         }
