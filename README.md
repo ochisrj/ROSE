@@ -1,4 +1,11 @@
 # ROSE Project
-ROSE is game engine project using `C++` and `OPENGL` with interactive user interface by using library [IMGUI](https://github.com/ocornut/imgui).
-Test message 1234 WHAT TT TT T TT T 
+**`ROSE`** is a Project game engine from scratch that use many librarie to make like `ImGui` `Opengl` and etc..
+
+# How To Use?
+This project are on development but you can try by dowload this repositories
+```
+git clone https://github.com/ochisrj/ROSE.git
+```
+
+Follow for more new feather on this repo
 
