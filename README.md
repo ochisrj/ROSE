@@ -7,6 +7,4 @@ This project are on development but you can try by dowload this repositories
 git clone https://github.com/ochisrj/ROSE.git
 ```
 
-Follow for more new feather on this repo
-
-test email
+Follow for more new feather on this repositories  
