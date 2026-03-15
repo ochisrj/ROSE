@@ -218,7 +218,7 @@ int main()
             ImGui::TextWrapped("The value is: %f", value);
             ImGui::TextLinkOpenURL("https://bkwschool.ac.th/");
             ImGui::Text("test update");
-
+            ImGui::TextWrapped("what a tet");
             ImGui::End();
         }
 
