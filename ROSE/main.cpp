@@ -79,12 +79,8 @@ int main()
     font_cfg.FontDataOwnedByAtlas = false;
     io.Fonts->AddFontFromMemoryTTF(cascadiacode, cascadiacodesize, 18.0f, &font_cfg, io.Fonts->GetGlyphRangesThai());
 
-    // --- State Variables ---
-    bool show_plot_2d = false;
-    bool config_window = false;
-    bool example = true;
-    static char formula_buffer[128] = "sin(x)"; // Default formula
-
+    bool table_window = true;
+    
     // Main while loop
     while (!glfwWindowShouldClose(window))
     {
@@ -100,127 +96,32 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // 1. TOP MENU BAR
-        if (ImGui::BeginMainMenuBar())
-        {
-            if (ImGui::BeginMenu("Files"))
+        ImGui::Begin("Text Formmatting");
+        ImGui::SeparatorText("Text");
+        ImGui::Text("This is test message for my c++ UI pratice");
+        ImGui::SeparatorText("Text Wrap");
+        ImGui::TextWrapped("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic");
+        ImGui::SeparatorText("Text Bullet");
+        ImGui::BulletText("text bullet vro");
+        ImGui::End();
+
+        ImGui::Begin("Table", &table_window);
+            if (ImGui::BeginTable("table2", 3))
             {
-                if (ImGui::MenuItem("Open")) { /* Logic Open */ }
-                ImGui::Separator();
-                if (ImGui::MenuItem("Close", "Alt+F4")) { glfwSetWindowShouldClose(window, true); }
-                ImGui::EndMenu();
-            }
-            if (ImGui::BeginMenu("Tools"))
-            {
-                ImGui::MenuItem("Plot2D", NULL, &show_plot_2d);
-                ImGui::MenuItem("RS config", NULL, &config_window);
-                ImGui::EndMenu();
-            }
-            ImGui::EndMainMenuBar();
-        }
-
-        if (example)
-        {
-            ImGui::Begin("test",&example);
-            ImGui::BulletText("First Item");
-            ImGui::BulletText("Second Item");
-            ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + 200.0f);
-            ImGui::Text("This long sentence will automatically wrap once it hits the 200px limit.");
-            ImGui::PopTextWrapPos();
-            ImGui::Text("Left Side");
-            ImGui::SameLine(ImGui::GetWindowWidth() - 100);
-            ImGui::Text("Right Side");
-            ImGui::Text("Left Side");
-            ImGui::SameLine(ImGui::GetWindowWidth() - 100);
-            ImGui::Text("Right Side");
-            ImVec2 pos = ImGui::GetCursorScreenPos();
-            ImGui::GetWindowDrawList()->AddRectFilled(pos, ImVec2(pos.x + 100, pos.y + 20), IM_COL32(255, 255, 0, 100));
-            ImGui::Text("Highlighted!");
-            ImGui::Text("This is normal text.");
-            ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "This is Orange text.");
-            ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "This is Cyan text.");
-            ImGui::TextDisabled("This is 'Disabled' text (usually gray).");
-
-            const char* text = "ADAPTIVE MATHEMATICAL PLOTTER";
-            for (int i = 0; i < strlen(text); i++) {
-                float hue = i * 0.1f;
-                ImGui::TextColored(ImColor::HSV(hue, 0.6f, 1.0f), "%c", text[i]);
-                ImGui::SameLine(0.0f, 0.0f); // Keep letters on the same line with no spacing
-            }
-            ImGui::NewLine();
-
-            // Success Status
-            ImGui::TextColored(ImVec4(0, 1, 0, 1), " (V) ");
-            ImGui::SameLine();
-            ImGui::Text("System Online");
-            ImGui::Text("test updare");
-            ImGui::Text("test COde");
-            ImGui::End();
-        }
-
-
-        // 2. PLOT 2D WINDOW (GeoGebra Style)
-        if (show_plot_2d)
-        {
-            ImGui::SetNextWindowSize(ImVec2(600, 500), ImGuiCond_FirstUseEver);
-            if (ImGui::Begin("2D Function Visualizer", &show_plot_2d))
-            {
-                ImGui::Text("Enter Function:");
-                ImGui::SetNextItemWidth(-1);
-                ImGui::InputText("##formula", formula_buffer, sizeof(formula_buffer));
-                ImGui::TextDisabled("Try: x, x*x, sin(x), cos(x), tan(x)");
-
-                ImGui::Separator();
-
-                if (ImPlot::BeginPlot("##Graph", ImVec2(-1, -1)))
+                for (int row = 0; row < 4; row++)
                 {
-                    ImPlot::SetupAxes("x", "f(x)");
-                    ImPlotRect limits = ImPlot::GetPlotLimits();
-
-                    // Generate points dynamically based on view
-                    static double x_data[1000], y_data[1000];
-                    double step = (limits.X.Max - limits.X.Min) / 999.0;
-
-                    for (int i = 0; i < 1000; ++i) {
-                        double x = limits.X.Min + (i * step);
-                        double y = 0;
-
-                        // Simple Parser Logic
-                        std::string f = formula_buffer;
-                        if (f == "x") y = x;
-                        else if (f == "x*x" || f == "x^2") y = x * x;
-                        else if (f == "sin(x)") y = sin(x);
-                        else if (f == "cos(x)") y = cos(x);
-                        else if (f == "tan(x)") y = tan(x);
-                        else if (f == "sqrt(x)") y = sqrt(x);
-                        else y = 0;
-
-                        x_data[i] = x;
-                        y_data[i] = y;
-                    }
-
-                    ImPlot::SetNextLineStyle(ImVec4(0, 1, 0.7f, 1), 2.0f);
-                    ImPlot::PlotLine("f(x)", x_data, y_data, 1000);
-                    ImPlot::EndPlot();
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+                    ImGui::Text("Row %d", row);
+                    ImGui::TableNextColumn();
+                    ImGui::Text("Some contents");
+                    ImGui::TableNextColumn();
+                    ImGui::Text("123.456");
                 }
+                ImGui::EndTable();
             }
-            ImGui::End();
-        }
+        ImGui::End();
 
-        if (config_window)
-        {
-            ImGui::Begin("Rs config");
-            ImGui::TextWrapped("Hello World, This is my personal project that i make it like my hobby. i like to watch behind the sence in many different game");
-            char buffer[256] = "";
-            ImGui::InputText("Text", buffer, sizeof(buffer));
-            ImGui::TextWrapped("Hello, World!");
-            float value = 1.23f;
-            ImGui::TextWrapped("The value is: %f", value);
-            ImGui::TextLinkOpenURL("https://bkwschool.ac.th/");
-            ImGui::Text("test update");
-            ImGui::TextWrapped("what a tet");
-            ImGui::End();
-        }
 
 
         ImGui::Render();

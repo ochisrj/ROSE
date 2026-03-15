@@ -141,6 +141,7 @@
     <ClCompile Include="..\..\implot-master\implot.cpp" />
     <ClCompile Include="..\..\implot-master\implot_demo.cpp" />
     <ClCompile Include="..\..\implot-master\implot_items.cpp" />
+    <ClCompile Include="debugtool.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="..\..\glad\include\glad\glad.h" />
     <ClInclude Include="..\..\implot-master\implot.h" />
     <ClInclude Include="..\..\implot-master\implot_internal.h" />
+    <ClInclude Include="debugtool.h" />
     <ClInclude Include="font.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
