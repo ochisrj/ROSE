@@ -154,6 +154,7 @@ int main()
             ImGui::SameLine();
             ImGui::Text("System Online");
             ImGui::Text("test updare");
+            ImGui::Text("test COde");
             ImGui::End();
         }
 
