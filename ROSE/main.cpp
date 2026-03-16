@@ -80,7 +80,8 @@ int main()
     io.Fonts->AddFontFromMemoryTTF(cascadiacode, cascadiacodesize, 18.0f, &font_cfg, io.Fonts->GetGlyphRangesThai());
 
     bool table_window = true;
-    
+    bool text_formatting = true;
+    bool data_window = true;
     // Main while loop
     while (!glfwWindowShouldClose(window))
     {
@@ -96,33 +97,36 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::Begin("Text Formmatting");
-        ImGui::SeparatorText("Text");
-        ImGui::Text("This is test message for my c++ UI pratice");
-        ImGui::SeparatorText("Text Wrap");
-        ImGui::TextWrapped("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic");
-        ImGui::SeparatorText("Text Bullet");
-        ImGui::BulletText("text bullet vro");
-        ImGui::End();
+        if (text_formatting)
+        {
+            ImGui::Begin("Text Formmatting", &text_formatting);
+            ImGui::SeparatorText("Text");
+            ImGui::Text("This is test message for my c++ UI pratice");
+            ImGui::SeparatorText("Text Wrap");
+            ImGui::TextWrapped("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic");
+            ImGui::SeparatorText("Text Bullet");
+            ImGui::BulletText("text bullet vro");
+            ImGui::End();
+        }
 
-        ImGui::Begin("Table", &table_window);
-            if (ImGui::BeginTable("table2", 3))
+        if (table_window)
+        {
+            ImGui::Begin("Table Window");
+            ImGui::Text("fafa \"tool\" test");
+            ImGui::End();
+        }
+
+
+        /*
+        if (data_window)
+        {
+            if (ImGui::TreeNode("Data Basic"))
             {
-                for (int row = 0; row < 4; row++)
-                {
-                    ImGui::TableNextRow();
-                    ImGui::TableNextColumn();
-                    ImGui::Text("Row %d", row);
-                    ImGui::TableNextColumn();
-                    ImGui::Text("Some contents");
-                    ImGui::TableNextColumn();
-                    ImGui::Text("123.456");
-                }
-                ImGui::EndTable();
+                ImGui::Text("tes");
             }
-        ImGui::End();
-
-
+            ImGui::TreePop();
+        }
+        */
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
