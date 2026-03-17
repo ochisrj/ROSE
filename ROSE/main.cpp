@@ -82,6 +82,7 @@ int main()
     bool table_window = true;
     bool text_formatting = true;
     bool data_window = true;
+    bool navigate_window = true;
     // Main while loop
     while (!glfwWindowShouldClose(window))
     {
@@ -116,7 +117,12 @@ int main()
             ImGui::End();
         }
 
+        if (navigate_window)
+        {
 
+        }
+
+        // test git repo
         /*
         if (data_window)
         {
