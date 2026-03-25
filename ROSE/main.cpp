@@ -4,7 +4,7 @@
 #include "imgui_internal.h"
 #include "implot.h"
 #include "implot3d.h"
-#include "font.h"
+//#include "font.h"
 
 #include <stack>
 #include <vector>
@@ -75,14 +75,18 @@ int main()
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
+    /*
     ImFontConfig font_cfg;
     font_cfg.FontDataOwnedByAtlas = false;
     io.Fonts->AddFontFromMemoryTTF(cascadiacode, cascadiacodesize, 18.0f, &font_cfg, io.Fonts->GetGlyphRangesThai());
+    */
+    bool table_window = false;
+    bool text_formatting = false;
+    bool data_window = false;
+    bool navigate_window = false;
+    bool demo_window = false;
 
-    bool table_window = true;
-    bool text_formatting = true;
-    bool data_window = true;
-    bool navigate_window = true;
+    bool checked = false;
     // Main while loop
     while (!glfwWindowShouldClose(window))
     {
@@ -98,15 +102,56 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        if (ImGui::BeginMainMenuBar())
+        {
+            if (ImGui::BeginMenu("File"))
+            {
+                if(ImGui::MenuItem("Save")){}
+                if(ImGui::MenuItem("Save as")) {}
+                ImGui::Separator();
+                if (ImGui::MenuItem("Open Folder"));
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("View"))
+            {
+                if (ImGui::MenuItem("Demo",NULL,&demo_window))
+                {}
+                    
+                ImGui::EndMenu();
+            }
+           
+
+            ImGui::EndMainMenuBar();
+
+        }
+        
+
+
         if (text_formatting)
         {
             ImGui::Begin("Text Formmatting", &text_formatting);
             ImGui::SeparatorText("Text");
             ImGui::Text("This is test message for my c++ UI pratice");
+            
             ImGui::SeparatorText("Text Wrap");
             ImGui::TextWrapped("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic");
-            ImGui::SeparatorText("Text Bullet");
+            
+            ImGui::SeparatorText("Text Bullet");  
             ImGui::BulletText("text bullet vro");
+            ImGui::BulletText("text bullet vro");
+            ImGui::BulletText("text bullet vro");
+
+            ImGui::SeparatorText("Button Style");
+            ImGui::Checkbox("box", &checked);
+            if (checked)
+            {
+                std::cout << "I know it" << std::endl;
+            }
+            if (ImGui::Button("Window"))
+            {
+            }
+
+
             ImGui::End();
         }
 
@@ -134,6 +179,11 @@ int main()
             ImGui::TreePop();
         }
         */
+        if (demo_window)
+        {
+            ImGui::ShowDemoWindow();
+        }
+
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
