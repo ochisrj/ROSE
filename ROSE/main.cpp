@@ -4,7 +4,7 @@
 #include "imgui_internal.h"
 #include "implot.h"
 #include "implot3d.h"
-//#include "font.h"
+#include "font.h"
 
 #include <stack>
 #include <vector>
@@ -75,11 +75,11 @@ int main()
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
-    /*
+    
     ImFontConfig font_cfg;
     font_cfg.FontDataOwnedByAtlas = false;
     io.Fonts->AddFontFromMemoryTTF(cascadiacode, cascadiacodesize, 18.0f, &font_cfg, io.Fonts->GetGlyphRangesThai());
-    */
+    
     bool table_window = false;
     bool text_formatting = false;
     bool data_window = false;
@@ -179,9 +179,10 @@ int main()
             ImGui::TreePop();
         }
         */
+
         if (demo_window)
         {
-            ImGui::ShowDemoWindow();
+            ImGui::ShowDemoWindow(&demo_window);
         }
 
 
