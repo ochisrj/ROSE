@@ -20,8 +20,20 @@
 
 
 // Shader sources
-const char* vertexShaderSource = "#version 330 core\n layout (location = 0) in vec3 aPos;\n void main() { gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0); }\0";
-const char* fragmentShaderSource = "#version 330 core\n out vec4 FragColor;\n void main() { FragColor = vec4(0.8f, 0.3f, 0.02f, 1.0f); }\n\0";
+const char* vertexShaderSource = "#version 330 core\n"
+"layout (location = 0) in vec3 aPos;\n"
+"uniform float size;\n" // เพิ่มตัวรับขนาด
+"void main()\n"
+"{\n"
+"   gl_Position = vec4(size * aPos.x, size * aPos.y, size * aPos.z, 1.0);\n"
+"}\0";
+const char* fragmentShaderSource = "#version 330 core\n"
+"out vec4 FragColor;\n"
+"uniform vec4 color;\n" // เพิ่มตัวรับสี
+"void main()\n"
+"{\n"
+"   FragColor = color;\n"
+"}\n\0";
 
 int main()
 {
@@ -33,7 +45,7 @@ int main()
     int width = 1024;
     int height = 768;
 
-    GLFWwindow* window = glfwCreateWindow(width, height, "Mini GeoGebra - C++/OpenGL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(width, height, "ROSE game engine", NULL, NULL);
     if (window == NULL) { glfwTerminate(); return -1; }
     glfwMakeContextCurrent(window);
     gladLoadGL();
@@ -53,7 +65,12 @@ int main()
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-    GLfloat vertices[] = { -0.5f, -0.288f, 0.0f, 0.5f, -0.288f, 0.0f, 0.0f, 0.577f, 0.0f };
+    GLfloat vertices[] = { 
+        -0.5f, -0.288f, 0.0f, 
+         0.5f, -0.288f, 0.0f, 
+         0.0f,  0.577f, 0.0f 
+    };
+
     GLuint VAO, VBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -80,13 +97,17 @@ int main()
     font_cfg.FontDataOwnedByAtlas = false;
     io.Fonts->AddFontFromMemoryTTF(cascadiacode, cascadiacodesize, 18.0f, &font_cfg, io.Fonts->GetGlyphRangesThai());
     
-    bool table_window = false;
+    int ea = 0;
+
+
+    bool trideb = false;
     bool text_formatting = false;
-    bool data_window = false;
-    bool navigate_window = false;
     bool demo_window = false;
 
-    bool checked = false;
+
+    bool fps_window = false;
+
+
     // Main while loop
     while (!glfwWindowShouldClose(window))
     {
@@ -106,20 +127,41 @@ int main()
         {
             if (ImGui::BeginMenu("File"))
             {
+
                 if(ImGui::MenuItem("Save")){}
                 if(ImGui::MenuItem("Save as")) {}
                 ImGui::Separator();
-                if (ImGui::MenuItem("Open Folder"));
+                if (ImGui::MenuItem("Open File")){}
+                if (ImGui::MenuItem("Open Folder")){}
+                
+                ImGui::Separator();
+                if (ImGui::BeginMenu("Preference"))
+                {
+                    static float sizew = 1.0f;
+                    ImGui::Checkbox("SHOW FPS", &fps_window);
+                    ImGui::SliderFloat("float", &sizew,0.5f, 1.0f);
+                    ImGui::EndMenu();
+                }
+
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("View"))
             {
-                if (ImGui::MenuItem("Demo",NULL,&demo_window))
-                {}
+                if (ImGui::BeginMenu("Window"))
+                {
+                    if (ImGui::MenuItem("Demo","", &demo_window)){}
+                    if (ImGui::MenuItem("Text Demo","",&text_formatting)){}
+                    if (ImGui::MenuItem("Triangle Debug","",&trideb)){}
+
+                    ImGui::EndMenu();
+                }
                     
                 ImGui::EndMenu();
             }
-           
+
+            if (ImGui::RadioButton("window",&ea,0)) {}
+            ImGui::SameLine();
+            if (ImGui::RadioButton("full screen", &ea, 1)) {}
 
             ImGui::EndMainMenuBar();
 
@@ -142,6 +184,7 @@ int main()
             ImGui::BulletText("text bullet vro");
 
             ImGui::SeparatorText("Button Style");
+            static bool checked = false;
             ImGui::Checkbox("box", &checked);
             if (checked)
             {
@@ -155,30 +198,42 @@ int main()
             ImGui::End();
         }
 
-        if (table_window)
-        {
-            ImGui::Begin("Table Window");
-            ImGui::Text("fafa \"tool\" test");
-            ImGui::Text("test git it not pull requesr again RIGHT??");
+
+        if (trideb)
+        {   
+            static bool drawTriangle = false;
+            static float size = 1.0f;
+            static float color[4] = { 0.8f, 0.3f, 0.02f, 1.0f };
+            glUseProgram(shaderProgram);
+            glUniform1f(glGetUniformLocation(shaderProgram, "size"), size);
+            glUniform4f(glGetUniformLocation(shaderProgram, "color"), color[0], color[1], color[2], color[3]);
+            glBindVertexArray(VAO);
+
+
+            // ImGUI window creation
+            ImGui::Begin("Triangle Debug",&trideb);
+            // Text that appears in the window
+            ImGui::Text("Hello there adventurer!");
+            // Checkbox that appears in the window
+            ImGui::Checkbox("Draw Triangle", &drawTriangle);
+            if (drawTriangle)
+                // Draw the triangle using the GL_TRIANGLES primitive
+                glDrawArrays(GL_TRIANGLES, 0, 3);
+            // Slider that appears in the window
+            ImGui::SliderFloat("Size", &size, 0.5f, 2.0f);
+            // Fancy color editor that appears in the window
+            ImGui::ColorEdit4("Color", color);
+            // Ends the window
             ImGui::End();
         }
 
-        if (navigate_window)
+        if (fps_window)
         {
-
+            ImGui::Begin("FPS window", &fps_window);
+            ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+            ImGui::End();
         }
-
-        // test git repo
-        /*
-        if (data_window)
-        {
-            if (ImGui::TreeNode("Data Basic"))
-            {
-                ImGui::Text("tes");
-            }
-            ImGui::TreePop();
-        }
-        */
+        
 
         if (demo_window)
         {
