@@ -162,6 +162,7 @@ int main()
             if (ImGui::RadioButton("window",&ea,0)) {}
             ImGui::SameLine();
             if (ImGui::RadioButton("full screen", &ea, 1)) {}
+            ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
 
             ImGui::EndMainMenuBar();
 
