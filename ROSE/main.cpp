@@ -2,9 +2,15 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_internal.h"
+
 #include "implot.h"
+#include "implot_internal.h"
+
 #include "implot3d.h"
+#include "implot3d_internal.h"
+
 #include "font.h"
+#include "debugtool.h"
 
 #include <stack>
 #include <vector>
@@ -95,18 +101,9 @@ int main()
     
     ImFontConfig font_cfg;
     font_cfg.FontDataOwnedByAtlas = false;
-    io.Fonts->AddFontFromMemoryTTF(cascadiacode, cascadiacodesize, 18.0f, &font_cfg, io.Fonts->GetGlyphRangesThai());
-    
-    int ea = 0;
+    io.Fonts->AddFontFromMemoryTTF(cascadiacode, cascadiacodesize, 17.0f, &font_cfg, io.Fonts->GetGlyphRangesThai());
 
-
-    bool trideb = false;
-    bool text_formatting = false;
-    bool demo_window = false;
-
-
-    bool fps_window = false;
-
+    debugtool ui;
 
     // Main while loop
     while (!glfwWindowShouldClose(window))
@@ -123,123 +120,8 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        if (ImGui::BeginMainMenuBar())
-        {
-            if (ImGui::BeginMenu("File"))
-            {
+        ui.DrawUI(io);
 
-                if(ImGui::MenuItem("Save")){}
-                if(ImGui::MenuItem("Save as")) {}
-                ImGui::Separator();
-                if (ImGui::MenuItem("Open File")){}
-                if (ImGui::MenuItem("Open Folder")){}
-                
-                ImGui::Separator();
-                if (ImGui::BeginMenu("Preference"))
-                {
-                    static float sizew = 1.0f;
-                    ImGui::Checkbox("SHOW FPS", &fps_window);
-                    ImGui::SliderFloat("float", &sizew,0.5f, 1.0f);
-                    ImGui::EndMenu();
-                }
-
-                ImGui::EndMenu();
-            }
-            if (ImGui::BeginMenu("View"))
-            {
-                if (ImGui::BeginMenu("Window"))
-                {
-                    if (ImGui::MenuItem("Demo","", &demo_window)){}
-                    if (ImGui::MenuItem("Text Demo","",&text_formatting)){}
-                    if (ImGui::MenuItem("Triangle Debug","",&trideb)){}
-
-                    ImGui::EndMenu();
-                }
-                    
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::RadioButton("window",&ea,0)) {}
-            ImGui::SameLine();
-            if (ImGui::RadioButton("full screen", &ea, 1)) {}
-            ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
-
-            ImGui::EndMainMenuBar();
-
-        }
-        
-
-
-        if (text_formatting)
-        {
-            ImGui::Begin("Text Formmatting", &text_formatting);
-            ImGui::SeparatorText("Text");
-            ImGui::Text("This is test message for my c++ UI pratice");
-            
-            ImGui::SeparatorText("Text Wrap");
-            ImGui::TextWrapped("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic");
-            
-            ImGui::SeparatorText("Text Bullet");  
-            ImGui::BulletText("text bullet vro");
-            ImGui::BulletText("text bullet vro");
-            ImGui::BulletText("text bullet vro");
-
-            ImGui::SeparatorText("Button Style");
-            static bool checked = false;
-            ImGui::Checkbox("box", &checked);
-            if (checked)
-            {
-                std::cout << "I know it" << std::endl;
-            }
-            if (ImGui::Button("Window"))
-            {
-            }
-
-
-            ImGui::End();
-        }
-
-
-        if (trideb)
-        {   
-            static bool drawTriangle = false;
-            static float size = 1.0f;
-            static float color[4] = { 0.8f, 0.3f, 0.02f, 1.0f };
-            glUseProgram(shaderProgram);
-            glUniform1f(glGetUniformLocation(shaderProgram, "size"), size);
-            glUniform4f(glGetUniformLocation(shaderProgram, "color"), color[0], color[1], color[2], color[3]);
-            glBindVertexArray(VAO);
-
-
-            // ImGUI window creation
-            ImGui::Begin("Triangle Debug",&trideb);
-            // Text that appears in the window
-            ImGui::Text("Hello there adventurer!");
-            // Checkbox that appears in the window
-            ImGui::Checkbox("Draw Triangle", &drawTriangle);
-            if (drawTriangle)
-                // Draw the triangle using the GL_TRIANGLES primitive
-                glDrawArrays(GL_TRIANGLES, 0, 3);
-            // Slider that appears in the window
-            ImGui::SliderFloat("Size", &size, 0.5f, 2.0f);
-            // Fancy color editor that appears in the window
-            ImGui::ColorEdit4("Color", color);
-            // Ends the window
-            ImGui::End();
-        }
-
-        if (fps_window)
-        {
-            ImGui::Begin("FPS window", &fps_window);
-            ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
-            ImGui::End();
-        }
-        
-
-        if (demo_window)
-        {
-            ImGui::ShowDemoWindow(&demo_window);
-        }
 
 
         ImGui::Render();
