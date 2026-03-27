@@ -142,7 +142,6 @@
     <ClCompile Include="..\..\implot-master\implot_demo.cpp" />
     <ClCompile Include="..\..\implot-master\implot_items.cpp" />
     <ClCompile Include="debugtool.cpp" />
-    <ClCompile Include="test.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -174,6 +173,7 @@
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="implot-3d\implot3d.h" />
     <ClInclude Include="implot-3d\implot3d_internal.h" />
+    <ClInclude Include="stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="backup.txt" />

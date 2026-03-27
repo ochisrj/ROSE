@@ -10,8 +10,13 @@
 #include "implot3d.h"
 #include "implot3d_internal.h"
 
+#include "main.cpp"
+#include "stb_image.h"
+
 
 #include <iostream>
+
+
 
 debugtool::debugtool()
 {
@@ -46,7 +51,7 @@ void debugtool::DrawMenuBar()
             {
                 if (ImGui::Checkbox("SHOW FPS",&fps_window))
                 {
-                    ImVec2 window_pos = ImVec2(100, 90);
+                    ImVec2 window_pos = ImVec2(50, 50);
                     ImGui::SetWindowPos(window_pos, ImGuiCond_Always);
                 }
                 static float sizew = 1.0f;
@@ -78,7 +83,8 @@ void debugtool::DrawMenuBar()
 
         if (ImGui::BeginMenu("Tools"))
         {
-            if (ImGui::MenuItem("Image Viewer"));
+            if (ImGui::MenuItem("Image Viewer",NULL,&image_viewer));
+            if (ImGui::MenuItem("Calculator"));
             ImGui::EndMenu();
         }
 
@@ -88,8 +94,8 @@ void debugtool::DrawMenuBar()
         if (ImGui::RadioButton("full screen", &ea, 1)) {}
 
         float fps = ImGui::GetIO().Framerate;
-        ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 100);
-        ImGui::Text("FPS: %.1f", fps);
+        ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 250);
+        ImGui::Text("FPS: %.1f | some text", fps);
 
         ImGui::EndMainMenuBar();
 
@@ -127,14 +133,20 @@ void debugtool::DrawFPS()
     if (fps_window)
     {
         ImGui::SetNextWindowBgAlpha(0.35f);
-        ImGui::Begin("FPS window", &fps_window, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBackground);
+        ImGui::Begin("FPS window", &fps_window, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
         ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0, 255, 0, 255));
         ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
         ImGui::PopStyleColor();
-        ImGui::Text("CPU: ");
-        ImGui::Text("GPU: ");
-        
 
+        static float frames[100] = { 0 };
+        static int frame_count = 0;
+        static int frame_time = 0;
+        frames[frame_count++ % 100] = frame_time;
+        ImGui::PlotLines("CPU Usage (ms/frame)", frames, IM_ARRAYSIZE(frames), frame_count % 100, "", 0.0f, 33.3f, ImVec2(0, 80.0f));
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f * frame_time, 1.0f / frame_time);
+
+        static float values[] = { 0.6f,0.3f,0.2f,0.63f };
+        ImGui::PlotHistogram("Histrogram" , values,IM_ARRAYSIZE(values),0,NULL,0.0f,1.0f,ImVec2(0,80.0f));
         
         ImGui::End();
     }
@@ -178,5 +190,12 @@ void debugtool::DrawTextFormat()
 
 void debugtool::DrawImageViewer()
 {
-
+    if (image_viewer)
+    {
+        ImGui::Begin("OpenGL Texture Text");
+        ImGui::Text("pointer = %p", my_image_texture);
+        ImGui::Text("size = %d x %d", my_image_width, my_image_height);
+        ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(my_image_width, my_image_height));
+        ImGui::End();
+    }
 }
