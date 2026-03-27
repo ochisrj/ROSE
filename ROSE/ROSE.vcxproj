@@ -154,7 +154,6 @@
     <ClCompile Include="implot-3d\implot3d_items.cpp" />
     <ClCompile Include="implot-3d\implot3d_meshes.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Micfont.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\glad\include\glad\glad.h" />
@@ -177,6 +176,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="backup.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\Pictures\20011.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

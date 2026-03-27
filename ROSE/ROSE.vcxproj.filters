@@ -46,9 +46,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Micfont.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\glad\src\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -123,8 +120,16 @@
     <Filter Include="Source Files\imgui">
       <UniqueIdentifier>{ef8fafb0-820b-4125-b59c-4e3c38f89ef2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\image">
+      <UniqueIdentifier>{fa62c880-4a63-4240-aeaf-8a1866526d79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="backup.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\Pictures\20011.jpg">
+      <Filter>Source Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

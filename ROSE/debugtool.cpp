@@ -10,9 +10,8 @@
 #include "implot3d.h"
 #include "implot3d_internal.h"
 
-#include "main.cpp"
 #include "stb_image.h"
-
+#include "main.cpp"
 
 #include <iostream>
 
@@ -83,8 +82,8 @@ void debugtool::DrawMenuBar()
 
         if (ImGui::BeginMenu("Tools"))
         {
-            if (ImGui::MenuItem("Image Viewer",NULL,&image_viewer));
-            if (ImGui::MenuItem("Calculator"));
+            if (ImGui::MenuItem("Image Viewer",NULL,&image_viewer)){}
+            if (ImGui::MenuItem("Calculator")){}
             ImGui::EndMenu();
         }
 
@@ -192,6 +191,12 @@ void debugtool::DrawImageViewer()
 {
     if (image_viewer)
     {
+        int my_image_width = 0;
+        int my_image_height = 0;
+        GLuint my_image_texture = 0;
+        bool ret = LoadTextureFromFile("C:/Users/Ochi/Downloads/ROSE/ROSE/20011.jpg", &my_image_texture, &my_image_width, &my_image_height);
+        IM_ASSERT(ret);
+
         ImGui::Begin("OpenGL Texture Text");
         ImGui::Text("pointer = %p", my_image_texture);
         ImGui::Text("size = %d x %d", my_image_width, my_image_height);
