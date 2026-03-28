@@ -22,17 +22,24 @@ private:
 	bool demo_window = false;
 	bool demo_plot = false;
 	bool demo_plot3D = false;
-	bool fps_window = false;
 	bool menubar = true;
 	bool image_viewer = false;
 	bool calculator = false;
+	bool performance_hud = false;
+	bool asset_browser   = false;
+	bool console_log     = false;
+	bool preferences     = false;
+
 
 	void DrawTextFormat();
 	void DrawDemo();
 	void DrawDemoPlot();
 	void DrawDemoPlot3D();
-	void DrawFPS();
 	void DrawMenuBar();
 	void DrawImageViewer();
 	void DrawCalculator();
+	void DrawPerformanceHUD();
+	void DrawAssetBrowser();
+	void DrawConsoleLog();
+	void DrawPreferences();
 };

@@ -10,128 +10,123 @@
 #include "implot3d.h"
 #include "implot3d_internal.h"
 
-/*
-#include "stb_image.h"
-#include "main.cpp"
-*/
-
 #include <iostream>
 #include <cmath>
-
+#include <string>
+#include <cstring>
+#include <sstream>
+#include <iomanip>
 
 debugtool::debugtool()
 {
-
 }
 
 void debugtool::DrawUI(ImGuiIO& io)
 {
-	DrawDemo();
+    DrawMenuBar();
+
+    // Debug / demo windows
+    DrawDemo();
     DrawDemoPlot();
     DrawDemoPlot3D();
-	DrawFPS();
-	DrawTextFormat();
-	DrawMenuBar();
+    DrawTextFormat();
+
+    // Tools
     DrawImageViewer();
     DrawCalculator();
+
+    // Panels
+    DrawPerformanceHUD();
+    DrawAssetBrowser();
+    DrawConsoleLog();
+    DrawPreferences();
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+//  MENU BAR
+// ─────────────────────────────────────────────────────────────────────────────
 void debugtool::DrawMenuBar()
 {
     if (ImGui::BeginMainMenuBar())
     {
+        // ── File ──────────────────────────────────────────────────────────────
         if (ImGui::BeginMenu("File"))
         {
-
-            if (ImGui::MenuItem("Save")) {}
-            if (ImGui::MenuItem("Save as")) {}
+            if (ImGui::MenuItem("Save", "Ctrl+S")) {}
+            if (ImGui::MenuItem("Save As", "Ctrl+Shift+S")) {}
             ImGui::Separator();
-            if (ImGui::MenuItem("Open File")) {}
+            if (ImGui::MenuItem("Open File", "Ctrl+O")) {}
             if (ImGui::MenuItem("Open Folder")) {}
             ImGui::Separator();
-            if (ImGui::BeginMenu("Preference"))
-            {
-                if (ImGui::Checkbox("SHOW FPS",&fps_window))
-                {
-
-                }
-                static float sizew = 1.0f;
-                ImGui::SliderFloat("float", &sizew, 0.5f, 1.0f);
-                ImGui::EndMenu();
-            }
+            if (ImGui::MenuItem("Preferences", NULL, &preferences)) {}
             ImGui::Separator();
-            if (ImGui::MenuItem("Quit"))
-            {
-
-            }
-
+            if (ImGui::MenuItem("Quit", "Alt+F4")) {}
             ImGui::EndMenu();
         }
+
+        // ── View ──────────────────────────────────────────────────────────────
         if (ImGui::BeginMenu("View"))
         {
-            if (ImGui::BeginMenu("Window"))
+            if (ImGui::BeginMenu("Debug Windows"))
             {
                 if (ImGui::MenuItem("Demo", "", &demo_window)) {}
-                if (ImGui::MenuItem("Demo Plot", "" , &demo_plot)) {}
-                if (ImGui::MenuItem("Demo Plot3D", "" , &demo_plot3D)) {}
+                if (ImGui::MenuItem("Demo Plot", "", &demo_plot)) {}
+                if (ImGui::MenuItem("Demo Plot3D", "", &demo_plot3D)) {}
                 if (ImGui::MenuItem("Text Demo", "", &text_formatting)) {}
-
                 ImGui::EndMenu();
             }
-
             ImGui::EndMenu();
         }
 
+        // ── Tools ─────────────────────────────────────────────────────────────
         if (ImGui::BeginMenu("Tools"))
         {
-            if (ImGui::MenuItem("Image Viewer",NULL,&image_viewer)){}
-            if (ImGui::MenuItem("Calculator",NULL,&calculator)) {}
+            if (ImGui::MenuItem("Image Viewer", NULL, &image_viewer)) {}
+            if (ImGui::MenuItem("Calculator", NULL, &calculator)) {}
+            ImGui::Separator();
+            if (ImGui::MenuItem("Asset Browser", NULL, &asset_browser)) {}
+            if (ImGui::MenuItem("Console / Log", NULL, &console_log)) {}
+            ImGui::Separator();
+            if (ImGui::MenuItem("Performance HUD", NULL, &performance_hud)) {}
             ImGui::EndMenu();
         }
 
-        static int ea = 0;
-        if (ImGui::RadioButton("window", &ea, 0)) {}
-        ImGui::SameLine();
-        if (ImGui::RadioButton("full screen", &ea, 1)) {}
-
+        // ── right side: FPS readout ───────────────────────────────────────────
         float fps = ImGui::GetIO().Framerate;
-        ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 250);
-        ImGui::Text("FPS: %.1f | some text", fps);
+        ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 220);
+        ImGui::Text("FPS: %.1f | ROSE Engine", fps);
 
         ImGui::EndMainMenuBar();
-
     }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+//  DEMO WINDOWS
+// ─────────────────────────────────────────────────────────────────────────────
 void debugtool::DrawDemo()
 {
     if (demo_window)
-    {
         ImGui::ShowDemoWindow(&demo_window);
-    }
-
 }
 
 void debugtool::DrawDemoPlot()
 {
     if (demo_plot)
-    {
         ImPlot::ShowDemoWindow(&demo_plot);
-    }
 }
 
 void debugtool::DrawDemoPlot3D()
 {
     if (demo_plot3D)
-    {
         ImPlot3D::ShowDemoWindow(&demo_plot3D);
-    }
 }
 
-
-void debugtool::DrawFPS()
+// ─────────────────────────────────────────────────────────────────────────────
+//  PERFORMANCE HUD  — live PlotLines that follow real framerate
+// ─────────────────────────────────────────────────────────────────────────────
+void debugtool::DrawPerformanceHUD()
 {
-    if (!fps_window) return;
+    if (!performance_hud) return;
 
     // Ring-buffer for the last 120 FPS samples
     static float  fps_history[120] = {};
@@ -171,7 +166,7 @@ void debugtool::DrawFPS()
         ImGuiWindowFlags_NoResize |
         ImGuiWindowFlags_AlwaysAutoResize;
 
-    ImGui::Begin("FPS window", &fps_window, flags);
+    ImGui::Begin("Performance HUD", &performance_hud, flags);
 
     float currentFPS = ImGui::GetIO().Framerate;
     float currentMS = (currentFPS > 0.f) ? 1000.f / currentFPS : 0.f;
@@ -216,7 +211,9 @@ void debugtool::DrawFPS()
     ImGui::End();
 }
 
-
+// ─────────────────────────────────────────────────────────────────────────────
+//  TEXT FORMATTING SHOWCASE — comprehensive ImGui feature demo
+// ─────────────────────────────────────────────────────────────────────────────
 void debugtool::DrawTextFormat()
 {
     if (!text_formatting) return;
@@ -503,29 +500,23 @@ void debugtool::DrawTextFormat()
     ImGui::End();
 }
 
-
+// ─────────────────────────────────────────────────────────────────────────────
+//  IMAGE VIEWER
+// ─────────────────────────────────────────────────────────────────────────────
 void debugtool::DrawImageViewer()
 {
-    if (image_viewer)
-    {
-        /*
-        int my_image_width = 0;
-        int my_image_height = 0;
-        GLuint my_image_texture = 0;
-        bool ret = LoadTextureFromFile("C:/Users/Ochi/Downloads/ROSE/ROSE/20011.jpg", &my_image_texture, &my_image_width, &my_image_height);
-        IM_ASSERT(ret);
-        */
-        ImGui::Begin("OpenGL Texture Text", &image_viewer);
-        ImGui::Text("te");
-        /*
-        ImGui::Text("pointer = %p", my_image_texture);
-        ImGui::Text("size = %d x %d", my_image_width, my_image_height);
-        ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(my_image_width, my_image_height));
-        */
-        ImGui::End();
-    }
+    if (!image_viewer) return;
+    ImGui::Begin("OpenGL Texture Text", &image_viewer);
+    ImGui::Text("Image viewer (texture loading not yet wired)");
+    ImGui::End();
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+//  CALCULATOR
+//  • Perfect 4-column uniform grid, every button identical size
+//  • Color scheme: dark digits | amber operators | red utilities | green equals
+//  • Keyboard: Numpad 0-9, +-*/ Enter Backspace Escape . and regular keys
+// ─────────────────────────────────────────────────────────────────────────────
 void debugtool::DrawCalculator()
 {
     if (!calculator) return;
@@ -762,10 +753,46 @@ void debugtool::DrawCalculator()
     ImGui::SameLine();
     if (BtnE("=")) evalPressed();
 
-    ImGui::PopStyleVar();  // FrameRounding, ItemSpacing
+    ImGui::PopStyleVar(2);  // FrameRounding, ItemSpacing
 
     ImGui::Spacing();
     ImGui::TextDisabled("Numpad / keyboard shortcuts active");
 
+    ImGui::End();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  ASSET BROWSER
+// ─────────────────────────────────────────────────────────────────────────────
+void debugtool::DrawAssetBrowser()
+{
+    if (!asset_browser) return;
+
+    ImGui::Begin("Asset Browser", &asset_browser);
+    ImGui::TextDisabled("Asset Browser — not yet implemented");
+    ImGui::End();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  CONSOLE / LOG
+// ─────────────────────────────────────────────────────────────────────────────
+void debugtool::DrawConsoleLog()
+{
+    if (!console_log) return;
+
+    ImGui::Begin("Console / Log", &console_log);
+    ImGui::TextDisabled("Console Log — not yet implemented");
+    ImGui::End();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  PREFERENCES
+// ─────────────────────────────────────────────────────────────────────────────
+void debugtool::DrawPreferences()
+{
+    if (!preferences) return;
+
+    ImGui::Begin("Preferences", &preferences);
+    ImGui::TextDisabled("Preferences — not yet implemented");
     ImGui::End();
 }
