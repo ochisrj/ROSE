@@ -25,6 +25,7 @@ private:
 	bool fps_window = false;
 	bool menubar = true;
 	bool image_viewer = false;
+	bool calculator = false;
 
 	void DrawTextFormat();
 	void DrawDemo();
@@ -33,4 +34,5 @@ private:
 	void DrawFPS();
 	void DrawMenuBar();
 	void DrawImageViewer();
+	void DrawCalculator();
 };

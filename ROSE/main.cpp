@@ -44,7 +44,7 @@ const char* fragmentShaderSource = "#version 330 core\n"
 "   FragColor = color;\n"
 "}\n\0";
 
-
+/*
 bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height)
 {
     int image_width = 0;
@@ -73,6 +73,7 @@ bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_wid
 
     return true;
 }
+*/
 
 int main()
 {
@@ -134,7 +135,7 @@ int main()
     
     ImFontConfig font_cfg;
     font_cfg.FontDataOwnedByAtlas = false;
-    io.Fonts->AddFontFromMemoryTTF(cascadiacode, cascadiacodesize, 17.0f, &font_cfg, io.Fonts->GetGlyphRangesThai());
+    io.Fonts->AddFontFromMemoryTTF(cascadiacode,cascadiacodesize, 19.0f, &font_cfg, io.Fonts->GetGlyphRangesThai());
 
 
     debugtool ui;
