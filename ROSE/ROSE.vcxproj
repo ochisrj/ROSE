@@ -142,6 +142,7 @@
     <ClCompile Include="..\..\implot-master\implot_demo.cpp" />
     <ClCompile Include="..\..\implot-master\implot_items.cpp" />
     <ClCompile Include="debugtool.cpp" />
+    <ClCompile Include="edit_menu.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -154,6 +155,7 @@
     <ClCompile Include="implot-3d\implot3d_items.cpp" />
     <ClCompile Include="implot-3d\implot3d_meshes.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="file_menu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\glad\include\glad\glad.h" />

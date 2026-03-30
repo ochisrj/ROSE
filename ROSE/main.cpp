@@ -10,7 +10,7 @@
 #include "implot3d_internal.h"
 
 #include "font.h"
-#include "debugtool.h"
+#include "menubar.h"
 
 #include "stb_image.h"
 #define STB_IMAGE_IMPLEMENTATION
@@ -138,7 +138,7 @@ int main()
     io.Fonts->AddFontFromMemoryTTF(cascadiacode,cascadiacodesize, 19.0f, &font_cfg, io.Fonts->GetGlyphRangesThai());
 
 
-    debugtool ui;
+    menubar ui;
 
     // Main while loop
     while (!glfwWindowShouldClose(window))

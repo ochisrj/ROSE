@@ -50,7 +50,13 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="debugtool.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\UIMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="file_menu.cpp">
+      <Filter>Source Files\UIMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="edit_menu.cpp">
+      <Filter>Source Files\UIMenu</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -97,9 +103,6 @@
     <ClInclude Include="..\..\glad\include\glad\glad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="debugtool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="stb\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -108,6 +111,9 @@
     </ClInclude>
     <ClInclude Include="monoc.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="debugtool.h">
+      <Filter>Header Files\UIMenu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -128,6 +134,12 @@
     </Filter>
     <Filter Include="Resource Files\image">
       <UniqueIdentifier>{fa62c880-4a63-4240-aeaf-8a1866526d79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UIMenu">
+      <UniqueIdentifier>{bbbbdea4-54d0-4e0f-9935-4986defcdf85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UIMenu">
+      <UniqueIdentifier>{90985a61-c54f-4d95-a24f-eca723ff62f7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
