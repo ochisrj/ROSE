@@ -141,8 +141,9 @@
     <ClCompile Include="..\..\implot-master\implot.cpp" />
     <ClCompile Include="..\..\implot-master\implot_demo.cpp" />
     <ClCompile Include="..\..\implot-master\implot_items.cpp" />
-    <ClCompile Include="debugtool.cpp" />
+    <ClCompile Include="build_menu.cpp" />
     <ClCompile Include="edit_menu.cpp" />
+    <ClCompile Include="help_menu.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -156,14 +157,22 @@
     <ClCompile Include="implot-3d\implot3d_meshes.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="file_menu.cpp" />
+    <ClCompile Include="menubar.cpp" />
+    <ClCompile Include="scene_menu.cpp" />
+    <ClCompile Include="tools_menu.cpp" />
+    <ClCompile Include="view_menu.cpp" />
+    <ClCompile Include="window_menu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\glad\include\glad\glad.h" />
     <ClInclude Include="..\..\implot-master\implot.h" />
     <ClInclude Include="..\..\implot-master\implot_internal.h" />
-    <ClInclude Include="debugtool.h" />
+    <ClInclude Include="build_menu.h" />
+    <ClInclude Include="edit_menu.h" />
+    <ClInclude Include="file_menu.h" />
     <ClInclude Include="font.h" />
     <ClInclude Include="google.h" />
+    <ClInclude Include="help_menu.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_glfw.h" />
@@ -175,8 +184,13 @@
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="implot-3d\implot3d.h" />
     <ClInclude Include="implot-3d\implot3d_internal.h" />
+    <ClInclude Include="menubar.h" />
     <ClInclude Include="monoc.h" />
+    <ClInclude Include="scene_menu.h" />
     <ClInclude Include="stb\stb_image.h" />
+    <ClInclude Include="tools_menu.h" />
+    <ClInclude Include="view_menu.h" />
+    <ClInclude Include="window_menu.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="backup.txt" />

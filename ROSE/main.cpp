@@ -135,10 +135,8 @@ int main()
     
     ImFontConfig font_cfg;
     font_cfg.FontDataOwnedByAtlas = false;
-    io.Fonts->AddFontFromMemoryTTF(cascadiacode,cascadiacodesize, 19.0f, &font_cfg, io.Fonts->GetGlyphRangesThai());
+    io.Fonts->AddFontFromMemoryTTF(cascadiacode,cascadiacodesize, 17.0f, &font_cfg, io.Fonts->GetGlyphRangesThai());
 
-
-    menubar ui;
 
     // Main while loop
     while (!glfwWindowShouldClose(window))
@@ -155,9 +153,7 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        ui.DrawUI(io);
-
-
+        MenuBar::Draw();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
