@@ -9,3 +9,13 @@
 #include "implot3d_internal.h"
 
 #include "help_menu.h"
+
+bool HelpMenu::Show_About_Window = false;
+bool HelpMenu::Show_Documentation_Window = false;
+bool HelpMenu::Show_Report_Window = false;
+bool HelpMenu::Show_UpdateLog_Window = false;
+
+void HelpMenu::DrawMenu()
+{
+	
+}
