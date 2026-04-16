@@ -14,4 +14,4 @@ public:
 	void Delete();
 };
 
-#endif 
+#endif

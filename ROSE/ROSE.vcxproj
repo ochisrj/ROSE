@@ -161,6 +161,7 @@
     <ClCompile Include="menubar.cpp" />
     <ClCompile Include="scene_menu.cpp" />
     <ClCompile Include="ShaderClass.cpp" />
+    <ClCompile Include="stb.cpp" />
     <ClCompile Include="tools_menu.cpp" />
     <ClCompile Include="VAO.cpp" />
     <ClCompile Include="VBO.cpp" />
@@ -193,7 +194,6 @@
     <ClInclude Include="monoc.h" />
     <ClInclude Include="scene_menu.h" />
     <ClInclude Include="ShaderClass.h" />
-    <ClInclude Include="stb\stb_image.h" />
     <ClInclude Include="tools_menu.h" />
     <ClInclude Include="VAO.h" />
     <ClInclude Include="VBO.h" />
