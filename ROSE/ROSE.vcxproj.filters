@@ -76,6 +76,18 @@
     <ClCompile Include="menubar.cpp">
       <Filter>Source Files\UIMenu</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VBO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EBO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VAO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h" />
@@ -115,19 +127,10 @@
     <ClInclude Include="imgui\imstb_truetype.h">
       <Filter>Header Files\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="font.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\glad\include\glad\glad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stb\stb_image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="google.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="monoc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="build_menu.h">
@@ -157,6 +160,27 @@
     <ClInclude Include="menubar.h">
       <Filter>Header Files\UIMenu</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="font.h">
+      <Filter>Header Files\fontstyle</Filter>
+    </ClInclude>
+    <ClInclude Include="google.h">
+      <Filter>Header Files\fontstyle</Filter>
+    </ClInclude>
+    <ClInclude Include="monoc.h">
+      <Filter>Header Files\fontstyle</Filter>
+    </ClInclude>
+    <ClInclude Include="VBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VAO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -183,6 +207,12 @@
     <Filter Include="Header Files\UIMenu">
       <UniqueIdentifier>{90985a61-c54f-4d95-a24f-eca723ff62f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Shaders">
+      <UniqueIdentifier>{e7cbde7f-d58d-459e-9785-64ba16e133cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\fontstyle">
+      <UniqueIdentifier>{2cb8a062-99bb-41bf-b629-effc29a24a0b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="backup.txt" />
@@ -191,5 +221,13 @@
     <Image Include="..\..\..\Pictures\20011.jpg">
       <Filter>Source Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="default.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="default.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

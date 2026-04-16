@@ -142,6 +142,7 @@
     <ClCompile Include="..\..\implot-master\implot_demo.cpp" />
     <ClCompile Include="..\..\implot-master\implot_items.cpp" />
     <ClCompile Include="build_menu.cpp" />
+    <ClCompile Include="EBO.cpp" />
     <ClCompile Include="edit_menu.cpp" />
     <ClCompile Include="help_menu.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -159,7 +160,10 @@
     <ClCompile Include="file_menu.cpp" />
     <ClCompile Include="menubar.cpp" />
     <ClCompile Include="scene_menu.cpp" />
+    <ClCompile Include="ShaderClass.cpp" />
     <ClCompile Include="tools_menu.cpp" />
+    <ClCompile Include="VAO.cpp" />
+    <ClCompile Include="VBO.cpp" />
     <ClCompile Include="view_menu.cpp" />
     <ClCompile Include="window_menu.cpp" />
   </ItemGroup>
@@ -168,6 +172,7 @@
     <ClInclude Include="..\..\implot-master\implot.h" />
     <ClInclude Include="..\..\implot-master\implot_internal.h" />
     <ClInclude Include="build_menu.h" />
+    <ClInclude Include="EBO.h" />
     <ClInclude Include="edit_menu.h" />
     <ClInclude Include="file_menu.h" />
     <ClInclude Include="font.h" />
@@ -187,8 +192,11 @@
     <ClInclude Include="menubar.h" />
     <ClInclude Include="monoc.h" />
     <ClInclude Include="scene_menu.h" />
+    <ClInclude Include="ShaderClass.h" />
     <ClInclude Include="stb\stb_image.h" />
     <ClInclude Include="tools_menu.h" />
+    <ClInclude Include="VAO.h" />
+    <ClInclude Include="VBO.h" />
     <ClInclude Include="view_menu.h" />
     <ClInclude Include="window_menu.h" />
   </ItemGroup>
@@ -197,6 +205,10 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\Pictures\20011.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="default.frag" />
+    <None Include="default.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

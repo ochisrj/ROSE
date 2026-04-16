@@ -9,7 +9,12 @@
 #include "implot3d.h"
 #include "implot3d_internal.h"
 
-#include "font.h"
+#include"ShaderClass.h"
+#include"VAO.h"
+#include"VBO.h"
+#include"EBO.h"
+
+// #include "font.h"
 #include "menubar.h"
 
 #include "stb_image.h"
@@ -26,23 +31,22 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
+GLfloat vertices[] = {
+    -0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower left corner
+    0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower right corner
+    0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f, // Upper corner
+    -0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, // Inner left
+    0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, // Inner right
+    0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f // Inner down
+};
 
+GLuint indices[] =
+{
+    0, 3, 5, // Lower left triangle
+    3, 2, 4, // Upper triangle
+    5, 4, 1 // Lower right triangle
 
-// Shader sources
-const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"uniform float size;\n" // เพิ่มตัวรับขนาด
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(size * aPos.x, size * aPos.y, size * aPos.z, 1.0);\n"
-"}\0";
-const char* fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"uniform vec4 color;\n" // เพิ่มตัวรับสี
-"void main()\n"
-"{\n"
-"   FragColor = color;\n"
-"}\n\0";
+};
 
 /*
 bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height)
@@ -91,34 +95,17 @@ int main()
     gladLoadGL();
     glViewport(0, 0, width, height);
 
-    // --- Shader & Buffer Setup (Same as your code) ---
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    GLuint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    Shader shaderProgram("default.vert", "default.frag");
 
-    GLfloat vertices[] = { 
-        -0.5f, -0.288f, 0.0f, 
-         0.5f, -0.288f, 0.0f, 
-         0.0f,  0.577f, 0.0f 
-    };
+    VAO VAO1;
+    VAO1.Bind();
 
-    GLuint VAO, VBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    VBO VBO1(vertices, sizeof(vertices));
+    EBO EBO1(indices, sizeof(indices));
+
+    VAO1.LinkVBO(VBO1, 0);
+    VAO1.Unbind();
+    VBO1.Unbind();
 
     // --- Initialize ImGUI & ImPlot ---
     IMGUI_CHECKVERSION();
@@ -132,22 +119,38 @@ int main()
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
-    
+/*
     ImFontConfig font_cfg;
     font_cfg.FontDataOwnedByAtlas = false;
     io.Fonts->AddFontFromMemoryTTF(cascadiacode,cascadiacodesize, 17.0f, &font_cfg, io.Fonts->GetGlyphRangesThai());
-
+*/
 
     // Main while loop
     while (!glfwWindowShouldClose(window))
     {
+
         glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Draw background triangle
-        glUseProgram(shaderProgram);
+        shaderProgram.Activate();
+        VAO1.Bind();
+
+        glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+       
+        
+        /*
+        GLint sizeID = glGetUniformLocation(shaderProgram, "size");
+        glUniform1f(sizeID, 1.0f); 
+
+        GLint colorID = glGetUniformLocation(shaderProgram, "color");
+        glUniform4f(colorID, 1.0f, 0.5f, 0.2f, 1.0f); 
+
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+        */
+        
+
+
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -161,6 +164,7 @@ int main()
         glfwPollEvents();
     }
 
+
     // Cleanup
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
@@ -168,9 +172,10 @@ int main()
     ImPlot::DestroyContext();
     ImGui::DestroyContext();
 
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteProgram(shaderProgram);
+    VAO1.Delete();
+    VBO1.Delete();
+    EBO1.Delete();
+    shaderProgram.Delete();
     glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
