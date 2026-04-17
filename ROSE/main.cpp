@@ -128,9 +128,13 @@ int main()
     font_cfg.FontDataOwnedByAtlas = false;
     io.Fonts->AddFontFromMemoryTTF(cascadiacode,cascadiacodesize, 17.0f, &font_cfg, io.Fonts->GetGlyphRangesThai());
 */
+    stbi_set_flip_vertically_on_load(true);
 
     int widthImg, heightImg, numColCh;
-    unsigned char* bytes = stbi_load("20011.jpg", &widthImg, &heightImg, &numColCh,0);
+    unsigned char* bytes = stbi_load("20011.jpg", &widthImg, &heightImg, &numColCh, 4);
+
+    
+
 
     GLuint texture;
     glGenTextures(1, &texture);

@@ -205,6 +205,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\Pictures\20011.jpg" />
+    <Image Include="..\..\..\Pictures\56946.jpg" />
+    <Image Include="..\..\..\Pictures\622065731_889591793692076_8921486877186476780_n.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default.frag" />
