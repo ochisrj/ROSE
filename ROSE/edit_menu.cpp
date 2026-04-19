@@ -14,7 +14,7 @@ bool EditMenu::Redo = false;
 bool EditMenu::Undo = false;
 bool EditMenu::SelectAll = false;
 
-void EditMenu::Draw()
+void EditMenu::DrawMenu()
 {
 	if (ImGui::BeginMenu("Edit"))
 	{

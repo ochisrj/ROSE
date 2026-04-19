@@ -20,7 +20,7 @@ bool FileMenu::Preferences = false;
 bool FileMenu::ProjectSettings = false;
 bool FileMenu::Quit = false;
 
-void FileMenu::Draw()
+void FileMenu::DrawMenu()
 {
     if (ImGui::BeginMenu("File")) {
         if(ImGui::MenuItem("New Scene",NULL,&NewScene)) {}

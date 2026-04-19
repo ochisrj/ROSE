@@ -81,12 +81,19 @@ void ToolMenu::DrawWindow()
     // ── FPS PlotLines — the graph follows the real framerate ───────────────
     ImGui::SeparatorText("FPS History");
     {
+        float max_fps = 0.0f;
+        float min_fps = FLT_MAX;
+        for (int i = 0; i < 120; i++) {
+            if (fps_history[i] > max_fps) max_fps = fps_history[i];
+            if (fps_history[i] < min_fps) min_fps = fps_history[i];
+        }
+
         char overlay[32];
         snprintf(overlay, sizeof(overlay), "%.0f fps", currentFPS);
         ImGui::PlotLines("##fps",
             fps_history, IM_ARRAYSIZE(fps_history), fps_offset,
             overlay,
-            0.0f, 200.0f,          // y-axis: 0 – 200 fps
+            FLT_MAX, FLT_MAX,      // เปลี่ยนจาก 0.0f, 200.0f เป็น FLT_MAX ทั้งคู่
             ImVec2(-1, 70));
     }
 

@@ -7,7 +7,7 @@
 class SceneMenu
 {
 public:
-	static void Draw();
+	static void DrawMenu();
 	static void DrawWindow();
 private:
 	static bool Camera;

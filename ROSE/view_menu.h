@@ -7,7 +7,7 @@
 class ViewMenu
 {
 public:
-	static void Draw();
+	static void DrawMenu();
 private:
 	static bool AssetBrowser;
 	static bool ConsoleLog;

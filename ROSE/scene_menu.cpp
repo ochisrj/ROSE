@@ -12,7 +12,7 @@
 
 bool SceneMenu::Camera = false;
 
-void SceneMenu::Draw()
+void SceneMenu::DrawMenu()
 {
 	if (ImGui::BeginMenu("Scene"))
 	{

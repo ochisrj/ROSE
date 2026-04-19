@@ -1,4 +1,7 @@
-﻿#include "imgui.h"
+﻿#include<filesystem>
+namespace fs = std::filesystem;
+
+#include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_internal.h"
@@ -16,7 +19,11 @@
 
 // #include "font.h"
 #include "menubar.h"
+#include"Texture.h"
 
+#include<glm/glm.hpp>
+#include<glm/gtc/matrix_transform.hpp>
+#include<glm/gtc/type_ptr.hpp>
 #include<stb/stb_image.h>
 #include <stack>
 #include <vector>
@@ -32,17 +39,22 @@
 
 GLfloat vertices[] =
 { //     COORDINATES     /        COLORS      /   TexCoord  //
-    -0.5f, -0.5f, 0.0f,     1.0f, 0.0f, 0.0f,	0.0f, 0.0f, // Lower left corner
-    -0.5f,  0.5f, 0.0f,     0.0f, 1.0f, 0.0f,	0.0f, 1.0f, // Upper left corner
-     0.5f,  0.5f, 0.0f,     0.0f, 0.0f, 1.0f,	1.0f, 1.0f, // Upper right corner
-     0.5f, -0.5f, 0.0f,     1.0f, 1.0f, 1.0f,	1.0f, 0.0f  // Lower right corner
+    -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	0.0f, 0.0f,
+    -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	5.0f, 0.0f,
+     0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	0.0f, 0.0f,
+     0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	5.0f, 0.0f,
+     0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	2.5f, 5.0f
 };
 
 // Indices for vertices order
 GLuint indices[] =
 {
-    0, 2, 1, // Upper triangle
-    0, 3, 2 // Lower triangle
+    0, 1, 2,
+    0, 2, 3,
+    0, 1, 4,
+    1, 2, 4,
+    2, 3, 4,
+    3, 0, 4
 };
 
 
@@ -91,6 +103,7 @@ int main()
     GLFWwindow* window = glfwCreateWindow(width, height, "ROSE game engine", NULL, NULL);
     if (window == NULL) { glfwTerminate(); return -1; }
     glfwMakeContextCurrent(window);
+    glfwSwapInterval(0);
     gladLoadGL();
     glViewport(0, 0, width, height);
 
@@ -123,25 +136,32 @@ int main()
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
-/*
-    ImFontConfig font_cfg;
-    font_cfg.FontDataOwnedByAtlas = false;
-    io.Fonts->AddFontFromMemoryTTF(cascadiacode,cascadiacodesize, 17.0f, &font_cfg, io.Fonts->GetGlyphRangesThai());
-*/
+    /*
+        ImFontConfig font_cfg;
+        font_cfg.FontDataOwnedByAtlas = false;
+        io.Fonts->AddFontFromMemoryTTF(cascadiacode,cascadiacodesize, 17.0f, &font_cfg, io.Fonts->GetGlyphRangesThai());
+    */
+
+
     stbi_set_flip_vertically_on_load(true);
 
-    int widthImg, heightImg, numColCh;
+    std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
+    std::string texPath = "/ROSE/";
+    std::string fullPath = parentDir + texPath + "20011.jpg";
+
+    std::cout << "Texture Full Path: " << fullPath << std::endl;
+    Texture Student((parentDir + texPath + "20011.jpg").c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+    Student.texUnit(shaderProgram, "tex0", 0);
+
+    /*int widthImg, heightImg, numColCh;
     unsigned char* bytes = stbi_load("20011.jpg", &widthImg, &heightImg, &numColCh, 4);
-
-    
-
 
     GLuint texture;
     glGenTextures(1, &texture);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -152,30 +172,62 @@ int main()
 
     stbi_image_free(bytes);
     glBindTexture(GL_TEXTURE_2D, 0);
+    
 
-    GLuint tex0Uni = glGetUniformLocation(shaderProgram.ID,"tex0");
+    GLuint tex0Uni = glGetUniformLocation(shaderProgram.ID, "tex0");
     shaderProgram.Activate();
     glUniform1i(tex0Uni, 0);
+    */
+    float rotation = 0.0f;
+    double prevtime = glfwGetTime();
+
+
+    glEnable(GL_DEPTH_TEST);
 
     while (!glfwWindowShouldClose(window))
     {
 
         glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shaderProgram.Activate();
+        
+        double crntTime = glfwGetTime();
+
+        if (crntTime - prevtime >= 1 / 60)
+        {
+            rotation += 0.1f;
+            prevtime = crntTime;
+        }
+
+        glm::mat4 model = glm::mat4(1.0f);
+        glm::mat4 view = glm::mat4(1.0f);
+        glm::mat4 proj = glm::mat4(1.0f);
+
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+        view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
+        proj = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
+
+        int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+        int projLoc = glGetUniformLocation(shaderProgram.ID, "proj");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
+
         glUniform1f(uniID, 0.5f);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        //glBindTexture(GL_TEXTURE_2D, texture);
+        Student.Bind();
         VAO1.Bind();
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         /*
         GLint sizeID = glGetUniformLocation(shaderProgram, "size");
-        glUniform1f(sizeID, 1.0f); 
+        glUniform1f(sizeID, 1.0f);
 
         GLint colorID = glGetUniformLocation(shaderProgram, "color");
-        glUniform4f(colorID, 1.0f, 0.5f, 0.2f, 1.0f); 
+        glUniform4f(colorID, 1.0f, 0.5f, 0.2f, 1.0f);
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
@@ -187,11 +239,12 @@ int main()
 
         MenuBar::Draw();
 
+        glad_glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(window);
         glfwPollEvents();
-    }
+    };
 
 
     // Cleanup
@@ -204,7 +257,8 @@ int main()
     VAO1.Delete();
     VBO1.Delete();
     EBO1.Delete();
-    glDeleteTextures(1, &texture);
+    Student.Delete();
+    //glDeleteTextures(1, &texture);
     shaderProgram.Delete();
     glfwDestroyWindow(window);
     glfwTerminate();

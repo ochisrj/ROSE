@@ -16,7 +16,7 @@ bool ViewMenu::AnimationEditor = false;
 bool ViewMenu::FullScreen = false;
 bool ViewMenu::Windowed = false;
 
-void ViewMenu::Draw()
+void ViewMenu::DrawMenu()
 {
 	if (ImGui::BeginMenu("View"))
 	{

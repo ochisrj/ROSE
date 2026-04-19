@@ -7,7 +7,7 @@
 class EditMenu
 {
 public: 
-	static void Draw();
+	static void DrawMenu();
 private:
 	static bool Undo;
 	static bool Redo;

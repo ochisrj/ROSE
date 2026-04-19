@@ -17,10 +17,10 @@ void MenuBar::Draw()
 {
 	if (ImGui::BeginMainMenuBar())
 	{
-		FileMenu::Draw();
-		EditMenu::Draw();
-		ViewMenu::Draw();
-		SceneMenu::Draw();
+		FileMenu::DrawMenu();
+		EditMenu::DrawMenu();
+		ViewMenu::DrawMenu();
+		SceneMenu::DrawMenu();
 		ToolMenu::DrawMenu();
 		ImGuiIO& io = ImGui::GetIO();
 		ImGui::Text("| %.1f FPS", io.Framerate);
