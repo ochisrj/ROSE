@@ -20,7 +20,9 @@ namespace fs = std::filesystem;
 // #include "font.h"
 #include "menubar.h"
 #include"Texture.h"
+#include"Camera.h"
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include<glm/glm.hpp>
 #include<glm/gtc/matrix_transform.hpp>
 #include<glm/gtc/type_ptr.hpp>
@@ -122,7 +124,7 @@ int main()
     VBO1.Unbind();
     EBO1.Unbind();
 
-    GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
+    //GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
 
     // --- Initialize ImGUI & ImPlot ---
     IMGUI_CHECKVERSION();
@@ -178,11 +180,12 @@ int main()
     shaderProgram.Activate();
     glUniform1i(tex0Uni, 0);
     */
-    float rotation = 0.0f;
-    double prevtime = glfwGetTime();
-
+    //float rotation = 0.0f;
+    //double prevtime = glfwGetTime();
 
     glEnable(GL_DEPTH_TEST);
+
+    Camera camera(width,height, glm::vec3(0.0f, 0.0f, 2.0f));
 
     while (!glfwWindowShouldClose(window))
     {
@@ -191,7 +194,12 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shaderProgram.Activate();
+
+        camera.Inputs(window);
+
+        camera.Matrix(45.0f, 0.1f, 100.0f, shaderProgram, "camMatrix");
         
+        /*
         double crntTime = glfwGetTime();
 
         if (crntTime - prevtime >= 1 / 60)
@@ -216,11 +224,13 @@ int main()
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
 
         glUniform1f(uniID, 0.5f);
+        */
+
         //glBindTexture(GL_TEXTURE_2D, texture);
         Student.Bind();
         VAO1.Bind();
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         /*
         GLint sizeID = glGetUniformLocation(shaderProgram, "size");

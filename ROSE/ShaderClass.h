@@ -1,6 +1,8 @@
 #ifndef SHADER_CLASS_H
 #define SHADER_CLASS_H
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include<glad/glad.h>
 #include<string>
 #include<fstream>

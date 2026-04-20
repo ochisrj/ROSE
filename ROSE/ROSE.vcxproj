@@ -142,6 +142,7 @@
     <ClCompile Include="..\..\implot-master\implot_demo.cpp" />
     <ClCompile Include="..\..\implot-master\implot_items.cpp" />
     <ClCompile Include="build_menu.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="EBO.cpp" />
     <ClCompile Include="edit_menu.cpp" />
     <ClCompile Include="help_menu.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="..\..\implot-master\implot.h" />
     <ClInclude Include="..\..\implot-master\implot_internal.h" />
     <ClInclude Include="build_menu.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="EBO.h" />
     <ClInclude Include="edit_menu.h" />
     <ClInclude Include="file_menu.h" />

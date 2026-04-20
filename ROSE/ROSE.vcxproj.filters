@@ -94,6 +94,9 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h" />
@@ -182,6 +185,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
