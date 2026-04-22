@@ -7,6 +7,10 @@ layout (location = 1) in vec3 aColor;
 // Texture Coordinates
 layout (location = 2) in vec2 aTex;
 
+// Outputs to fragment shader
+out vec3 color;
+out vec2 texCoord;
+
 uniform mat4 camMatrix;
 
 void main()

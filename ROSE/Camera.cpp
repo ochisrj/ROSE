@@ -13,12 +13,14 @@ void Camera::Matrix(float FOVdeg, float nearPlane, float farPlane, Shader& shade
 	glm::mat4 projection = glm::mat4(1.0f);
 
 	view = glm::lookAt(Position, Position + Orientation, Up);
-	projection = glm::perspective(glm::radians(FOVdeg), (float)(width / height), nearPlane, farPlane);
+	// BUG FIX 1: cast before division so aspect ratio is a float (e.g. 1.333), not int (1)
+	projection = glm::perspective(glm::radians(FOVdeg), (float)width / (float)height, nearPlane, farPlane);
 
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(projection + view));
+	// BUG FIX 2: multiply matrices (projection * view), NOT add them
+	glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(projection * view));
 }
 
-void Camera::Inputs(GLFWwindow * window)
+void Camera::Inputs(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
@@ -53,4 +55,38 @@ void Camera::Inputs(GLFWwindow * window)
 		speed = 0.1f;
 	}
 
+	// Mouse look - hold right mouse button to look around
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+	{
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
+		if (firstClick)
+		{
+			glfwSetCursorPos(window, (width / 2), (height / 2));
+			firstClick = false;
+		}
+
+		double mouseX, mouseY;
+		glfwGetCursorPos(window, &mouseX, &mouseY);
+
+		float rotX = sensitivity * (float)(mouseY - (height / 2)) / height;
+		float rotY = sensitivity * (float)(mouseX - (width / 2)) / width;
+
+		glm::vec3 newOrientation = glm::rotate(Orientation, glm::radians(-rotX), glm::normalize(glm::cross(Orientation, Up)));
+
+		// Only rotate vertically if not going past 85 degrees
+		if (abs(glm::angle(newOrientation, Up) - glm::radians(90.0f)) <= glm::radians(85.0f))
+		{
+			Orientation = newOrientation;
+		}
+
+		Orientation = glm::rotate(Orientation, glm::radians(-rotY), Up);
+
+		glfwSetCursorPos(window, (width / 2), (height / 2));
+	}
+	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE)
+	{
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		firstClick = true;
+	}
 }

@@ -99,8 +99,8 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    int width = 1024;
-    int height = 768;
+    int width = 1920;
+    int height = 1080;
 
     GLFWwindow* window = glfwCreateWindow(width, height, "ROSE game engine", NULL, NULL);
     if (window == NULL) { glfwTerminate(); return -1; }
