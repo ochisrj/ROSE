@@ -8,6 +8,7 @@
 #include "implot_internal.h"
 #include "implot3d_internal.h"
 
+
 #include "view_menu.h"
 
 bool ViewMenu::AssetBrowser = false;
@@ -28,4 +29,9 @@ void ViewMenu::DrawMenu()
 		if(ImGui::MenuItem("Windowled",NULL,&Windowed)){}
 		ImGui::EndMenu();
 	}
+}
+
+void ViewMenu::DrawWindow()
+{
+	
 }

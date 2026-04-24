@@ -149,10 +149,10 @@ int main()
 
     std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
     std::string texPath = "/ROSE/";
-    std::string fullPath = parentDir + texPath + "20011.jpg";
+    //std::string fullPath = parentDir + texPath + "20011.jpg";
 
-    std::cout << "Texture Full Path: " << fullPath << std::endl;
-    Texture Student((parentDir + texPath + "20011.jpg").c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+    //std::cout << "Texture Full Path: " << fullPath << std::endl;
+    Texture Student((parentDir + texPath + "56946.jpg").c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
     Student.texUnit(shaderProgram, "tex0", 0);
 
     /*int widthImg, heightImg, numColCh;
