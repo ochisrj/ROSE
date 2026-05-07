@@ -1,5 +1,25 @@
-﻿#include<filesystem>
+﻿#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#include <filesystem>
 namespace fs = std::filesystem;
+
+#include "Core/Log.h"
+#include "Core/Engine.h"
+#include "Core/Time.h"
+#include "Core/Event.h"
+#include "Scene/SceneManager.h"
+#include "Resource/ResourceManager.h"
+#include "ECS/Entity.h"
+#include "ECS/Component.h"
+#include "ECS/System.h"
+
+#include "ShaderClass.h"
+#include "VAO.h"
+#include "VBO.h"
+#include "EBO.h"
+#include "Texture.h"
+#include "Camera.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -12,43 +32,27 @@ namespace fs = std::filesystem;
 #include "implot3d.h"
 #include "implot3d_internal.h"
 
-#include"ShaderClass.h"
-#include"VAO.h"
-#include"VBO.h"
-#include"EBO.h"
-
-// #include "font.h"
-#include "menubar.h"
-#include"Texture.h"
-#include"Camera.h"
-
 #define GLM_ENABLE_EXPERIMENTAL
-#include<glm/glm.hpp>
-#include<glm/gtc/matrix_transform.hpp>
-#include<glm/gtc/type_ptr.hpp>
-#include<stb/stb_image.h>
-#include <stack>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <stb/stb_image.h>
+#include <iostream>
+#include <string>
 #include <vector>
 #include <sstream>
-#include <map> 
+#include <map>
 #include <math.h>
-#include <vector>
-#include <iostream>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <string>
-
 
 GLfloat vertices[] =
-{ //     COORDINATES     /        COLORS      /   TexCoord  //
-    -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	0.0f, 0.0f,
-    -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	5.0f, 0.0f,
-     0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	0.0f, 0.0f,
-     0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	5.0f, 0.0f,
-     0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	2.5f, 5.0f
+{
+    -0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 0.0f, 0.0f,
+    -0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f, 5.0f, 0.0f,
+     0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f, 0.0f, 0.0f,
+     0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 5.0f, 0.0f,
+     0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f, 2.5f, 5.0f
 };
 
-// Indices for vertices order
 GLuint indices[] =
 {
     0, 1, 2,
@@ -59,126 +63,42 @@ GLuint indices[] =
     3, 0, 4
 };
 
-
-
-//test main
-
 int main()
 {
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    auto& engine = Engine::Instance();
 
-    int width = 1920;
-    int height = 1080;
-
-    GLFWwindow* window = glfwCreateWindow(width, height, "ROSE game engine", NULL, NULL);
-    if (window == NULL) { glfwTerminate(); return -1; }
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(0);
-    gladLoadGL();
-    glViewport(0, 0, width, height);
-
-    Shader shaderProgram("default.vert", "default.frag");
-
-    VAO VAO1;
-    VAO1.Bind();
-
-    VBO VBO1(vertices, sizeof(vertices));
-    EBO EBO1(indices, sizeof(indices));
-
-    VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
-    VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    VAO1.Unbind();
-    VBO1.Unbind();
-    EBO1.Unbind();
-
-
-    // --- Initialize ImGUI & ImPlot ---
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImPlot::CreateContext();
-    ImPlot3D::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    ImGui::StyleColorsDark();
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 330");
-
-    /*
-        ImFontConfig font_cfg;
-        font_cfg.FontDataOwnedByAtlas = false;
-        io.Fonts->AddFontFromMemoryTTF(cascadiacode,cascadiacodesize, 17.0f, &font_cfg, io.Fonts->GetGlyphRangesThai());
-    */
-
+    if (!engine.Init(1920, 1080, "ROSE Engine")) {
+        return -1;
+    }
 
     stbi_set_flip_vertically_on_load(true);
 
     std::string parentDir = (fs::current_path().fs::path::parent_path()).string();
     std::string texPath = "/ROSE/";
     std::string fullPath = parentDir + texPath + "20011.jpg";
-
     std::cout << "Texture Full Path: " << fullPath << std::endl;
-    Texture Student((parentDir + texPath + "20011.jpg").c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-    Student.texUnit(shaderProgram, "tex0", 0);
 
+    auto scene = std::make_unique<Scene>("DefaultScene");
+    EntityRegistry& registry = EntityRegistry::Instance();
 
+    EntityID testEntity = scene->CreateEntity("TestPyramid");
+    auto& transform = registry.GetComponent<TransformComponent>(testEntity);
+    transform.Position = glm::vec3(0.0f, 0.0f, -2.0f);
+    transform.Scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    glEnable(GL_DEPTH_TEST);
+    auto& sprite = registry.AddComponent<SpriteComponent>(testEntity);
+    sprite.TexturePath = fullPath;
+    sprite.Size = glm::vec2(1.0f, 1.0f);
+    sprite.Layer = 0;
 
-    Camera camera(width,height, glm::vec3(0.0f, 0.0f, 2.0f));
+    ResourceManager::Instance().LoadTexture("test_texture", fullPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+    ResourceManager::Instance().LoadShader("default_shader", "default.vert", "default.frag");
 
-    while (!glfwWindowShouldClose(window))
-    {
+    SceneManager::Instance().AddScene(std::move(scene));
+    SceneManager::Instance().SetActiveScene("DefaultScene");
 
-        glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    engine.Run();
 
-        shaderProgram.Activate();
-
-        camera.Inputs(window);
-
-        camera.Matrix(45.0f, 0.1f, 100.0f, shaderProgram, "camMatrix");
-        
-
-
-        //glBindTexture(GL_TEXTURE_2D, texture);
-        Student.Bind();
-        VAO1.Bind();
-
-
-
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        MenuBar::Draw();
-
-        glad_glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    };
-
-
-    // Cleanup
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImPlot3D::DestroyContext();
-    ImPlot::DestroyContext();
-    ImGui::DestroyContext();
-
-    VAO1.Delete();
-    VBO1.Delete();
-    EBO1.Delete();
-    Student.Delete();
-    //glDeleteTextures(1, &texture);
-    shaderProgram.Delete();
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    engine.Shutdown();
     return 0;
 }

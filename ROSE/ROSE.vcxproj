@@ -137,6 +137,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Core\Log.cpp" />
+    <ClCompile Include="Core\Time.cpp" />
+    <ClCompile Include="Core\Engine.cpp" />
+    <ClCompile Include="ECS\Entity.cpp" />
+    <ClCompile Include="ECS\System.cpp" />
+    <ClCompile Include="Scene\Scene.cpp" />
+    <ClCompile Include="Scene\SceneManager.cpp" />
+    <ClCompile Include="Resource\ResourceManager.cpp" />
+    <ClCompile Include="Render\Renderer.cpp" />
+    <ClCompile Include="Render\SpriteBatch.cpp" />
+    <ClCompile Include="Render\SpriteShader.cpp" />
+    <ClCompile Include="Render\OrthoCamera.cpp" />
+    <ClCompile Include="Render\PostProcess.cpp" />
+    <ClCompile Include="Render\Light2D.cpp" />
+    <ClCompile Include="Render\ParticleSystem.cpp" />
+    <ClCompile Include="Render\TilemapRenderer.cpp" />
+    <ClCompile Include="Render\Animation2D.cpp" />
     <ClCompile Include="..\..\glad\src\glad.c" />
     <ClCompile Include="..\..\implot-master\implot.cpp" />
     <ClCompile Include="..\..\implot-master\implot_demo.cpp" />
@@ -171,6 +188,26 @@
     <ClCompile Include="window_menu.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core\Log.h" />
+    <ClInclude Include="Core\Event.h" />
+    <ClInclude Include="Core\Time.h" />
+    <ClInclude Include="Core\Engine.h" />
+    <ClInclude Include="ECS\Entity.h" />
+    <ClInclude Include="ECS\Component.h" />
+    <ClInclude Include="ECS\System.h" />
+    <ClInclude Include="Scene\Scene.h" />
+    <ClInclude Include="Scene\SceneManager.h" />
+    <ClInclude Include="Resource\ResourceManager.h" />
+    <ClInclude Include="Render\Renderer.h" />
+    <ClInclude Include="Render\SpriteBatch.h" />
+    <ClInclude Include="Render\SpriteShader.h" />
+    <ClInclude Include="Render\OrthoCamera.h" />
+    <ClInclude Include="Render\PostProcess.h" />
+    <ClInclude Include="Render\Light2D.h" />
+    <ClInclude Include="Render\ParticleSystem.h" />
+    <ClInclude Include="Render\TilemapRenderer.h" />
+    <ClInclude Include="Render\Animation2D.h" />
+    <ClInclude Include="Render\DepthSort.h" />
     <ClInclude Include="..\..\glad\include\glad\glad.h" />
     <ClInclude Include="..\..\implot-master\implot.h" />
     <ClInclude Include="..\..\implot-master\implot_internal.h" />
