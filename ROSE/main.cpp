@@ -112,7 +112,6 @@ int main()
         ImFontConfig font_cfg;
         font_cfg.FontDataOwnedByAtlas = false;
         io.Fonts->AddFontFromMemoryTTF(cascadiacode,cascadiacodesize, 17.0f, &font_cfg, io.Fonts->GetGlyphRangesThai());
-        dadad
     */
 
 
