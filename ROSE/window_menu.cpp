@@ -12,3 +12,14 @@
 #include "implot3d_internal.h"
 
 #include "window_menu.h"
+
+bool WindowMenu::adad = false;
+
+void WindowMenu::DrawMenu()
+{
+	if (ImGui::BeginMenu("Window"))
+	{
+		if (ImGui::MenuItem("test", NULL, &adad)) {}
+		ImGui::EndMenu();
+	}
+}

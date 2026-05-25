@@ -25,6 +25,7 @@ void MenuBar::Draw()
 		ViewMenu::DrawMenu();
 		SceneMenu::DrawMenu();
 		ToolMenu::DrawMenu();
+		WindowMenu::DrawMenu();
 		ImGuiIO& io = ImGui::GetIO();
 		ImGui::Text("| %.1f FPS", io.Framerate);
 

@@ -7,7 +7,7 @@
 class WindowMenu
 {
 public:
-	static void Draw();
+	static void DrawMenu();
 private:
 	static bool adad;
 };

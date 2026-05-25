@@ -61,36 +61,6 @@ GLuint indices[] =
 
 
 
-/*
-bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height)
-{
-    int image_width = 0;
-    int image_height = 0;
-    unsigned char* image_data = stbi_load(filename, &image_width, &image_height, NULL, 4);
-    if (image_data == NULL)
-        return false;
-
-    GLuint image_texture;
-    glGenTextures(1, &image_texture);
-    glBindTexture(GL_TEXTURE_2D, image_texture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-#if defined(GL_UNPACK_ROW_LENGTH) && !defined(__EMSCRIPTEN__)
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-#endif
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width, image_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
-    stbi_image_free(image_data);
-
-    *out_texture = image_texture;
-    *out_width = image_width;
-    *out_height = image_height;
-
-    return true;
-}
-*/
 
 int main()
 {
@@ -99,8 +69,8 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    int width = 1920;
-    int height = 1080;
+    int width = 800;
+    int height = 600;
 
     GLFWwindow* window = glfwCreateWindow(width, height, "ROSE game engine", NULL, NULL);
     if (window == NULL) { glfwTerminate(); return -1; }
@@ -124,7 +94,6 @@ int main()
     VBO1.Unbind();
     EBO1.Unbind();
 
-    //GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
 
     // --- Initialize ImGUI & ImPlot ---
     IMGUI_CHECKVERSION();
@@ -155,33 +124,6 @@ int main()
     Texture Student((parentDir + texPath + "20011.jpg").c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
     Student.texUnit(shaderProgram, "tex0", 0);
 
-    /*int widthImg, heightImg, numColCh;
-    unsigned char* bytes = stbi_load("20011.jpg", &widthImg, &heightImg, &numColCh, 4);
-
-    GLuint texture;
-    glGenTextures(1, &texture);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    stbi_image_free(bytes);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-
-    GLuint tex0Uni = glGetUniformLocation(shaderProgram.ID, "tex0");
-    shaderProgram.Activate();
-    glUniform1i(tex0Uni, 0);
-    */
-    //float rotation = 0.0f;
-    //double prevtime = glfwGetTime();
 
     glEnable(GL_DEPTH_TEST);
 
@@ -199,49 +141,8 @@ int main()
 
         camera.Matrix(45.0f, 0.1f, 100.0f, shaderProgram, "camMatrix");
 
-        /*
-        double crntTime = glfwGetTime();
-
-        if (crntTime - prevtime >= 1 / 60)
-        {
-            rotation += 0.1f;
-            prevtime = crntTime;
-        }
-
-        glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 view = glm::mat4(1.0f);
-        glm::mat4 proj = glm::mat4(1.0f);
-
-        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-        view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
-        proj = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
-
-        int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        int projLoc = glGetUniformLocation(shaderProgram.ID, "proj");
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
-
-        glUniform1f(uniID, 0.5f);
-        */
-
-        //glBindTexture(GL_TEXTURE_2D, texture);
         Student.Bind();
         VAO1.Bind();
-
-        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-        /*
-        GLint sizeID = glGetUniformLocation(shaderProgram, "size");
-        glUniform1f(sizeID, 1.0f);
-
-        GLint colorID = glGetUniformLocation(shaderProgram, "color");
-        glUniform4f(colorID, 1.0f, 0.5f, 0.2f, 1.0f);
-
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
-        */
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -268,7 +169,6 @@ int main()
     VBO1.Delete();
     EBO1.Delete();
     Student.Delete();
-    //glDeleteTextures(1, &texture);
     shaderProgram.Delete();
     glfwDestroyWindow(window);
     glfwTerminate();
