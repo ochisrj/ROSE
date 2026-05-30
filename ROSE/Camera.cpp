@@ -56,22 +56,26 @@ void Camera::Inputs(GLFWwindow* window)
 		speed = 0.1f;
 	}
 
-	// Mouse look - hold right mouse button to look around
+	// Mouse look - hold right mouse button to look around (cursor stays visible)
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 	{
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
-		if (firstClick)
-		{
-			glfwSetCursorPos(window, (width / 2), (height / 2));
-			firstClick = false;
-		}
-
 		double mouseX, mouseY;
 		glfwGetCursorPos(window, &mouseX, &mouseY);
 
-		float rotX = sensitivity * (float)(mouseY - (height / 2)) / height;
-		float rotY = sensitivity * (float)(mouseX - (width / 2)) / width;
+		if (firstClick)
+		{
+			lastX = mouseX;
+			lastY = mouseY;
+			firstClick = false;
+		}
+
+		float dx = (float)(mouseX - lastX);
+		float dy = (float)(mouseY - lastY);
+		lastX = mouseX;
+		lastY = mouseY;
+
+		float rotX = sensitivity * dy / height;
+		float rotY = sensitivity * dx / width;
 
 		glm::vec3 newOrientation = glm::rotate(Orientation, glm::radians(-rotX), glm::normalize(glm::cross(Orientation, Up)));
 
@@ -82,12 +86,9 @@ void Camera::Inputs(GLFWwindow* window)
 		}
 
 		Orientation = glm::rotate(Orientation, glm::radians(-rotY), Up);
-
-		glfwSetCursorPos(window, (width / 2), (height / 2));
 	}
 	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE)
 	{
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		firstClick = true;
 	}
 }

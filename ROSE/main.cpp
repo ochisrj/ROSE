@@ -77,7 +77,6 @@ int main()
     glfwMakeContextCurrent(window);
     glfwSwapInterval(0);
     gladLoadGL();
-    glViewport(0, 0, width, height);
 
     Shader shaderProgram("default.vert", "default.frag");
 
@@ -141,6 +140,15 @@ int main()
 
         camera.Matrix(45.0f, 0.1f, 100.0f, shaderProgram, "camMatrix");
 
+        int fbWidth, fbHeight;
+        glfwGetFramebufferSize(window, &fbWidth, &fbHeight);
+        if (fbWidth != camera.width || fbHeight != camera.height)
+        {
+            camera.width = fbWidth;
+            camera.height = fbHeight;
+            glViewport(0, 0, fbWidth, fbHeight);
+        }
+
         Student.Bind();
         VAO1.Bind();
 
@@ -150,7 +158,7 @@ int main()
 
         MenuBar::Draw();
 
-        glad_glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(window);
