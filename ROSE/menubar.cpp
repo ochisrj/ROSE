@@ -12,20 +12,19 @@
 #include "implot3d.h"
 #include "implot3d_internal.h"
 
-#include "menubar.h"
-
 #include <iostream>
 
-void MenuBar::Draw()
+void MenuBar::Draw(GLFWwindow * window)
 {
 	if (ImGui::BeginMainMenuBar())
 	{
-		FileMenu::DrawMenu();
+		FileMenu::DrawMenu(window);
 		EditMenu::DrawMenu();
 		ViewMenu::DrawMenu();
 		SceneMenu::DrawMenu();
 		ToolMenu::DrawMenu();
 		WindowMenu::DrawMenu();
+		BuildMenu::
 		ImGuiIO& io = ImGui::GetIO();
 		ImGui::Text("| %.1f FPS", io.Framerate);
 

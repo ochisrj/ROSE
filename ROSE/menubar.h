@@ -12,8 +12,10 @@
 #include "window_menu.h"
 #include "help_menu.h"
 
+struct GLFWwindow;
+
 class MenuBar
 {
 public:
-	static void Draw();
+	static void Draw(GLFWwindow*window);
 };

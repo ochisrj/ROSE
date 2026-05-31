@@ -12,3 +12,11 @@
 #include "implot3d_internal.h"
 
 #include "build_menu.h"
+
+void BuildMenu::DrawMenu()
+{
+	if (ImGui::Begin("Build"))
+	{
+		if(ImGui::MenuItem("fa")) {}
+	}
+}

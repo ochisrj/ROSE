@@ -22,8 +22,8 @@ bool FileMenu::ExportAsset = false;
 bool FileMenu::Preferences = false;
 bool FileMenu::ProjectSettings = false;
 bool FileMenu::Quit = false;
-
-void FileMenu::DrawMenu()
+    
+void FileMenu::DrawMenu(GLFWwindow * window)
 {
     if (ImGui::BeginMenu("File")) {
         if(ImGui::MenuItem("New Scene",NULL,&NewScene)) {}
@@ -37,7 +37,10 @@ void FileMenu::DrawMenu()
         if(ImGui::MenuItem("Preference",NULL,&Preferences)){}
         if(ImGui::MenuItem("Project Setting",NULL,&ProjectSettings)){}
         ImGui::Separator();
-        if(ImGui::MenuItem("Quit",NULL , &Quit)) {}
+        if(ImGui::MenuItem("Quit",NULL , &Quit)) 
+        {
+            glfwSetWindowShouldClose(window, GLFW_TRUE);
+        }
 
         ImGui::EndMenu();
     }

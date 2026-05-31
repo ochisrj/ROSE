@@ -6,7 +6,7 @@
 
 class FileMenu {
 public:
-	static void DrawMenu();
+	static void DrawMenu(GLFWwindow*window);
 private:
 	static bool NewScene;
 	static bool OpenScene;

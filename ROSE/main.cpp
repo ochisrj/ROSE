@@ -75,7 +75,7 @@ int main()
     GLFWwindow* window = glfwCreateWindow(width, height, "ROSE game engine", NULL, NULL);
     if (window == NULL) { glfwTerminate(); return -1; }
     glfwMakeContextCurrent(window);
-    glfwSwapInterval(0);
+    glfwSwapInterval(1);
     gladLoadGL();
 
     Shader shaderProgram("default.vert", "default.frag");
@@ -156,7 +156,7 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        MenuBar::Draw();
+        MenuBar::Draw(window);
 
         glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
         ImGui::Render();
