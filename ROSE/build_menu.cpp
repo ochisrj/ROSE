@@ -13,10 +13,19 @@
 
 #include "build_menu.h"
 
+bool BuildMenu::PlayGame = false;
+bool BuildMenu::PauseGame = false;
+bool BuildMenu::BuildGame = false;
+bool BuildMenu::BuildSetting = false;
+
 void BuildMenu::DrawMenu()
 {
-	if (ImGui::Begin("Build"))
+	if (ImGui::BeginMenu("Build"))
 	{
-		if(ImGui::MenuItem("fa")) {}
+		if (ImGui::MenuItem("Play", "ctrl+F5", &PlayGame)) {}
+		if (ImGui::MenuItem("Pause", "F3", &PauseGame)) {}
+		if (ImGui::MenuItem("Build", "ctrl+b", &BuildGame)) {}
+		if (ImGui::MenuItem("Build Setting", NULL, &BuildSetting)) {}
+		ImGui::EndMenu();
 	}
 }

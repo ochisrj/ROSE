@@ -24,12 +24,13 @@ void MenuBar::Draw(GLFWwindow * window)
 		SceneMenu::DrawMenu();
 		ToolMenu::DrawMenu();
 		WindowMenu::DrawMenu();
-		BuildMenu::
+		BuildMenu::DrawMenu();
 		ImGuiIO& io = ImGui::GetIO();
 		ImGui::Text("| %.1f FPS", io.Framerate);
 
 		ImGui::EndMainMenuBar();
 	}
+	FileMenu::DrawWindow();
 	SceneMenu::DrawWindow();
 	ToolMenu::DrawWindow();
 }

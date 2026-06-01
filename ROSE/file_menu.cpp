@@ -20,6 +20,7 @@ bool FileMenu::SaveAsScene = false;
 bool FileMenu::ImportAsset = false;
 bool FileMenu::ExportAsset = false;
 bool FileMenu::Preferences = false;
+bool FileMenu::VsyncOnOff = false;
 bool FileMenu::ProjectSettings = false;
 bool FileMenu::Quit = false;
     
@@ -42,6 +43,12 @@ void FileMenu::DrawMenu(GLFWwindow * window)
             glfwSetWindowShouldClose(window, GLFW_TRUE);
         }
 
+
         ImGui::EndMenu();
     }
+}
+
+void FileMenu::DrawWindow()
+{
+   
 }

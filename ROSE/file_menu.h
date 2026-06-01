@@ -7,6 +7,7 @@
 class FileMenu {
 public:
 	static void DrawMenu(GLFWwindow*window);
+	static void DrawWindow();
 private:
 	static bool NewScene;
 	static bool OpenScene;
@@ -15,6 +16,7 @@ private:
 	static bool ImportAsset;
 	static bool ExportAsset;
 	static bool Preferences;
+	static bool VsyncOnOff;
 	static bool ProjectSettings;
 	static bool Quit;
 };
