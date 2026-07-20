@@ -54,6 +54,9 @@
     <ClInclude Include="file.h">
       <Filter>Header Files\menu</Filter>
     </ClInclude>
+    <ClInclude Include="vendor\stb\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="vendor\imgui\imgui.cpp">
@@ -89,5 +92,16 @@
     <ClCompile Include="file.cpp">
       <Filter>Source Files\menu</Filter>
     </ClCompile>
+    <ClCompile Include="stb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="20011.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="CU_sub-logo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

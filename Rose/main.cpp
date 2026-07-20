@@ -1,4 +1,4 @@
-#include <glad/glad.h>     // MUST be included before glfw3.h
+﻿#include <glad/glad.h>     // MUST be included before glfw3.h
 #include <GLFW/glfw3.h>
 
 // --- Dear ImGui Headers ---
@@ -7,6 +7,8 @@
 #include "imgui_impl_opengl3.h"
 
 #include "menubar.h"
+#include "stb_image.h"
+#include "stb_image_write.h"
 
 #include <iostream>
 
@@ -14,20 +16,25 @@ const char* vertexShaderSource =
 "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n" 
 "layout (location = 1) in vec3 aColor;\n"
+"layout (location = 2) in vec2 atexCoord;\n"
 "out vec3 ourColor;\n"
+"out vec2 TexCoord;\n"
 "void main()\n"
 "{\n"
 "   gl_Position = vec4(aPos, 1.0);\n"
 "   ourColor = aColor;\n"
+"   TexCoord = atexCoord;\n"
 "}\0";
 
-const char* fragmentShaderSource = 
+const char* fragmentShaderSource =
 "#version 330 core\n"
 "out vec4 FragColor;\n"
-"in vec3 ourColor;\n" 
+"in vec3 ourColor;\n"
+"in vec2 TexCoord;\n"
+"uniform sampler2D ourTexture;\n"
 "void main()\n"
 "{\n"
-"   FragColor = vec4(ourColor , 1.0);\n" 
+"   FragColor = texture(ourTexture, TexCoord);\n"
 "}\n\0";
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -91,10 +98,10 @@ int main()
     GLfloat vertices[] =
     {
        // Triangle
-    // positions         // colors
-     0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
-    -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
-     0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top 
+     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
 
         // Rectangle
         // 0.5f,  0.5f, 0.0f,  // top right
@@ -103,32 +110,73 @@ int main()
         //-0.5f,  0.5f, 0.0f   // top left 
     };
 
+    GLfloat texCoord[] =
+    {
+        0.0f, 0.0f,  // lower-left corner  
+        1.0f, 0.0f,  // lower-right corner
+        0.5f, 1.0f   // top-center corner
+    };
+
     unsigned int indices[] =
     {
         0,1,3,
         1,2,3
     };
 
-    unsigned int EBO;
-    GLuint VAO, VBO;
-
+    unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
 
     glBindVertexArray(VAO);
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    // set the texture wrapping/filtering options (on the currently bound texture object)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load and generate the texture
+    int width, height, nrChannels;
+    stbi_set_flip_vertically_on_load(true); // กลับด้านภาพให้ตรงกับพิกัด OpenGL
+    unsigned char* data = stbi_load("20011.jpg", &width, &height, &nrChannels, 0);
+
+    if (data)
+    {
+        // ตรวจสอบ Channels เพื่อเลือก Format ให้ถูก
+        GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
+
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+
+
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -144,6 +192,7 @@ int main()
     // Dynamic state variables for ImGui manipulation
     float clearColor[4] = { 0.10f, 0.10f, 0.12f, 1.0f };
     bool showDemoWindow = false;
+    bool wireframemode = false;
     int counter = 0;
 
     // MAIN RENDER LOOP
@@ -168,13 +217,17 @@ int main()
             ImGui::ColorEdit4("Background Color", clearColor);
 
             // Button trigger
-            if (ImGui::Button("Click Me!"))
-            {
-                counter++;
-            }
-            ImGui::SameLine();
-            ImGui::Text("Count = %d", counter);
             ImGui::Checkbox("Show ImGui Demo Window", &showDemoWindow);
+            ImGui::Checkbox("Wireframe Mode", &wireframemode);
+            if (wireframemode)
+            {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            }
+            else
+            {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            }
+            
             ImGui::Separator();
             ImGui::Text("Performance: %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 
@@ -204,8 +257,10 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         glBindVertexArray(VAO);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        /*glDrawArrays(GL_TRIANGLES, 0, 3);*/
         glBindVertexArray(0);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // wireframe mode using GL_LINE : GL_FILL to default
 
