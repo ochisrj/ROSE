@@ -19,8 +19,11 @@
     <Filter Include="Header Files\menu">
       <UniqueIdentifier>{c6363685-cc29-42f1-8d0c-449cffb2f533}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader">
+    <Filter Include="Resource Files\Shader">
       <UniqueIdentifier>{29c64a4f-11ba-4def-9ddc-ff1295749c79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\texture">
+      <UniqueIdentifier>{8791ee3a-7f4e-4d82-9969-3b5e448fe68e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +67,9 @@
       <Filter>Header Files\menu</Filter>
     </ClInclude>
     <ClInclude Include="camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -116,21 +122,24 @@
     <ClCompile Include="camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="20011.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="CU_sub-logo.png">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\texture</Filter>
+    </Image>
+    <Image Include="20011.jpg">
+      <Filter>Resource Files\texture</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\shader.frag">
-      <Filter>Shader</Filter>
+      <Filter>Resource Files\Shader</Filter>
     </None>
     <None Include="Shader\shader.vert">
-      <Filter>Shader</Filter>
+      <Filter>Resource Files\Shader</Filter>
     </None>
   </ItemGroup>
 </Project>

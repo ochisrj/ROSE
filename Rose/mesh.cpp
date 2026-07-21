@@ -1,6 +1,8 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <math.h>
+
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -20,7 +22,9 @@ void MeshMenu::DrawMenu()
 	{
 		if(ImGui::MenuItem("triangle",NULL,&Triangle)){}
 		if(ImGui::MenuItem("Circle",NULL,&Circle)){}
-		if(ImGui::MenuItem("Sphere",NULL,&Sphere)){}
+		if(ImGui::MenuItem("Sphere",NULL,&Sphere))
+		{
+		}
 		if(ImGui::MenuItem("Cube",NULL,&Cube)){}
 		if(ImGui::MenuItem("Rectangle",NULL,&Rectangle)){}
 		ImGui::EndMenu();

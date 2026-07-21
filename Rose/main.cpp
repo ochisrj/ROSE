@@ -43,7 +43,7 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL - Camera Class", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL - Camera & Rotation", nullptr, nullptr);
     if (window == nullptr)
     {
         std::cerr << "Failed to create GLFW window\n";
@@ -55,7 +55,7 @@ int main()
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
-    glfwSwapInterval(1);
+    //glfwSwapInterval(1);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) return -1;
 
@@ -171,11 +171,16 @@ int main()
 
     float clearColor[4] = { 0.10f, 0.10f, 0.12f, 1.0f };
     bool wireframemode = false;
+    bool showMyWindow = true;
+    bool showMultipleCubes = true; // 🌟 เพิ่มสวิตช์เลือกการแสดงผลกล่อง
+    bool autoRotate = false;
+    float rotateX = 0.0f;
+    float rotateY = 0.0f;
+    float rotateZ = 0.0f;
 
     // RENDER LOOP
     while (!glfwWindowShouldClose(window))
     {
-        // 🌟 คำนวณ Delta Time เพื่อให้กล้องเคลื่อนที่ด้วยความเร็วสม่ำเสมอทุก FPS
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -188,33 +193,86 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        menubar::Draw(window);
+
         {
-            ImGui::Begin("Camera & Scene Control");
-            ImGui::ColorEdit4("Background", clearColor);
-            ImGui::Checkbox("Wireframe", &wireframemode);
-            ImGui::Separator();
-
-            // UI ควบคุม Camera
-            ImGui::Text("Camera Status & Settings");
-            ImGui::Text("Pos: (%.2f, %.2f, %.2f)", camera.Position.x, camera.Position.y, camera.Position.z);
-            ImGui::Text("Yaw: %.1f | Pitch: %.1f", camera.Yaw, camera.Pitch);
-            ImGui::SliderFloat("Camera Speed", &camera.MovementSpeed, 0.5f, 15.0f);
-            ImGui::SliderFloat("Mouse Sensitivity", &camera.MouseSensitivity, 0.01f, 0.5f);
-            ImGui::SliderFloat("FOV (Zoom)", &camera.Zoom, 1.0f, 90.0f);
-
-            if (ImGui::Button("Reset Camera Position"))
+            if (ImGui::IsKeyPressed(ImGuiKey_5))
             {
-                camera.Position = glm::vec3(0.0f, 0.0f, 3.0f);
-                camera.Yaw = -90.0f;
-                camera.Pitch = 0.0f;
+                showMyWindow = !showMyWindow;
             }
 
-            ImGui::Separator();
-            ImGui::Text("Controls Tip:");
-            ImGui::TextColored(ImVec4(1, 1, 0, 1), "WASD / Space / Ctrl: Move Camera");
-            ImGui::TextColored(ImVec4(1, 1, 0, 1), "Right-Click + Drag: Look Around");
+            ImGuiWindowFlags ImGuiFlag =
+                ImGuiWindowFlags_NoTitleBar |
+                ImGuiWindowFlags_NoMove |
+                ImGuiWindowFlags_NoResize |
+                ImGuiWindowFlags_AlwaysAutoResize |
+                ImGuiWindowFlags_NoScrollbar;
 
-            ImGui::End();
+            if (showMyWindow)
+            {
+                ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 1.0f);
+                ImGui::PushStyleVar(ImGuiStyleVar_SeparatorTextBorderSize, 1.0f);
+                ImGuiViewport* viewport = ImGui::GetMainViewport();
+                ImVec2 workPos = viewport->WorkPos;
+                ImVec2 workSize = viewport->WorkSize;
+                ImGui::SetNextWindowPos(ImVec2(workPos.x + workSize.x, workPos.y), ImGuiCond_Always, ImVec2(1.01f, -0.02f));
+                ImGui::SetNextWindowSize(ImVec2(500.0f, 800.0f), ImGuiCond_FirstUseEver);
+
+                ImGui::Begin("My Window", &showMyWindow, ImGuiFlag);
+                ImGui::SeparatorText("Control Tips (Press 5 to hide)");
+                ImGui::Text("W = Move Forward");
+                ImGui::Text("S = Move Backward");
+                ImGui::Text("A = Move Left");
+                ImGui::Text("D = Move Right");
+                ImGui::Text("SpaceBar = Move Up");
+                ImGui::Text("Left Ctrl = Move Down");
+                ImGui::Text("Middle Mouse = Zoom");
+                ImGui::Text("Right Click = Drag Camera");
+
+                ImGui::SeparatorText("Camera & Scene Control");
+                ImGui::ColorEdit4("Background", clearColor);
+                ImGui::Checkbox("Wireframe", &wireframemode);
+                ImGui::Checkbox("Show 10 Cubes", &showMultipleCubes);
+                static bool vsync = true;
+                if (ImGui::Checkbox("Enable VSync", &vsync)) {
+                    glfwSwapInterval(vsync ? 1 : 0);
+                }
+
+                ImGui::Text("Camera Status & Settings");
+                ImGui::Text("Pos: (%.2f, %.2f, %.2f)", camera.Position.x, camera.Position.y, camera.Position.z);
+                ImGui::Text("Yaw: %.1f | Pitch: %.1f", camera.Yaw, camera.Pitch);
+                ImGui::Text("Framerate : %.1f fps",ImGui::GetIO().Framerate);
+                ImGui::SliderFloat("Camera Speed", &camera.MovementSpeed, 0.5f, 15.0f);
+                ImGui::SliderFloat("Mouse Sensitivity", &camera.MouseSensitivity, 0.01f, 0.5f);
+                ImGui::SliderFloat("FOV (Zoom)", &camera.Zoom, 1.0f, 90.0f);
+
+                ImGui::SeparatorText("Rotation Control");
+                ImGui::Checkbox("Auto Rotate (Y-Axis)", &autoRotate);
+                if (!autoRotate)
+                {
+                    ImGui::SliderFloat("Rotate X", &rotateX, 0.0f, 360.0f);
+                    ImGui::SliderFloat("Rotate Y", &rotateY, 0.0f, 360.0f);
+                    ImGui::SliderFloat("Rotate Z", &rotateZ, 0.0f, 360.0f);
+
+                    if (ImGui::Button("Reset Rotation"))
+                    {
+                        rotateX = 0.0f;
+                        rotateY = 0.0f;
+                        rotateZ = 0.0f;
+                    }
+                }
+
+                if (ImGui::Button("Reset Camera Position"))
+                {
+                    camera.Position = glm::vec3(0.0f, 0.0f, 3.0f);
+                    camera.Yaw = -90.0f;
+                    camera.Pitch = 0.0f;
+                }
+
+                ImGui::End();
+                ImGui::PopStyleVar();
+                ImGui::PopStyleVar();
+            }
         }
 
         int currentWidth, currentHeight;
@@ -234,7 +292,12 @@ int main()
 
         ourShader.use();
 
-        // 🌟 ดึง View Matrix และ Projection Matrix จาก Camera Class
+        // 🌟 คำนวณมุมหมุนสำหรับใช้เรนเดอร์
+        float currentRotX = rotateX;
+        float currentRotY = autoRotate ? (float)glfwGetTime() * 50.0f : rotateY;
+        float currentRotZ = rotateZ;
+
+        // ดึง View Matrix และ Projection Matrix จาก Camera Class
         float aspectRatio = (currentHeight > 0) ? ((float)currentWidth / (float)currentHeight) : 1.0f;
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), aspectRatio, 0.1f, 100.0f);
         glm::mat4 view = camera.GetViewMatrix();
@@ -244,15 +307,32 @@ int main()
 
         glBindVertexArray(VAO);
 
-        // Draw 10 Cubes
-        for (unsigned int i = 0; i < 10; i++)
+        // 🌟 นำค่าการหมุนหมุนเข้าไปใช้งานใน Model Matrix
+        if (showMultipleCubes)
         {
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, cubePositions[i]);
-            float angle = 20.0f * i;
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-            ourShader.setMat4("model", model);
+            for (unsigned int i = 0; i < 10; i++)
+            {
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, cubePositions[i]);
 
+                // ประยุกต์การหมุน X, Y, Z ร่วมกับตำแหน่งกล่อง
+                model = glm::rotate(model, glm::radians(currentRotX), glm::vec3(1.0f, 0.0f, 0.0f));
+                model = glm::rotate(model, glm::radians(currentRotY + (i * 20.0f)), glm::vec3(0.0f, 1.0f, 0.0f));
+                model = glm::rotate(model, glm::radians(currentRotZ), glm::vec3(0.0f, 0.0f, 1.0f));
+
+                ourShader.setMat4("model", model);
+                glDrawArrays(GL_TRIANGLES, 0, 36);
+            }
+        }
+        else
+        {
+            // วาดกล่องเดียวตรงกลางเพื่อทดสอบการหมุน 360 องศาได้ชัดเจนขึ้น
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::rotate(model, glm::radians(currentRotX), glm::vec3(1.0f, 0.0f, 0.0f));
+            model = glm::rotate(model, glm::radians(currentRotY), glm::vec3(0.0f, 1.0f, 0.0f));
+            model = glm::rotate(model, glm::radians(currentRotZ), glm::vec3(0.0f, 0.0f, 1.0f));
+
+            ourShader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
@@ -277,7 +357,6 @@ int main()
     return 0;
 }
 
-// 🌟 ระบบควบคุมกล้องด้วยปุ่มกด
 void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -302,7 +381,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-// 🌟 หันมุมกล้องเมื่อ "คลิกขวาค้างไว้แล้วลากเมาส์"
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
     float xpos = static_cast<float>(xposIn);
@@ -316,19 +394,17 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     }
 
     float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // กลับทิศทาง Y เนื่องจากจุด (0,0) อยู่มุมซ้ายบน
+    float yoffset = lastY - ypos;
 
     lastX = xpos;
     lastY = ypos;
 
-    // หมุนเฉพาะตอนกด "คลิกขวา" ค้างไว้ เพื่อไม่ให้ตีกับ UI ของ ImGui
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
     {
         camera.ProcessMouseMovement(xoffset, yoffset);
     }
 }
 
-// 🌟 Zoom กล้องด้วยการหมุนลูกกลิ้งเมาส์
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(static_cast<float>(yoffset));
