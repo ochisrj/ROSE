@@ -1,7 +1,6 @@
 ﻿#include <glad/glad.h>  
 #include <GLFW/glfw3.h>
 
-// --- Dear ImGui Headers ---
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -14,29 +13,37 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "shaderclass.h"
+#include "camera.h"
 #include <iostream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 
-// ขนาดเริ่มต้นตอนเปิดโปรแกรม
+// Window settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
+// Camera
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+float lastX = SCR_WIDTH / 2.0f;
+float lastY = SCR_HEIGHT / 2.0f;
+bool firstMouse = true;
+
+// Timing
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
+
 int main()
 {
-    // 1. INITIALIZE GLFW & CREATE WINDOW
-    if (!glfwInit())
-    {
-        std::cerr << "Failed to initialize GLFW\n";
-        return -1;
-    }
+    if (!glfwInit()) return -1;
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL - Coordinate Systems 3D", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL - Camera Class", nullptr, nullptr);
     if (window == nullptr)
     {
         std::cerr << "Failed to create GLFW window\n";
@@ -45,22 +52,18 @@ int main()
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSwapInterval(1); // Vsync
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
 
-    // 2. LOAD OPENGL FUNCTION POINTERS (GLAD)
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cerr << "Failed to initialize GLAD\n";
-        return -1;
-    }
+    glfwSwapInterval(1);
 
-    // เปิดใช้งาน Depth Testing สำหรับงาน 3D
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) return -1;
+
     glEnable(GL_DEPTH_TEST);
 
-    // 3. COMPILE SHADERS
     Shader ourShader("Shader/shader.vert", "Shader/shader.frag");
 
-    // 4. VERTEX DATA (กล่อง Cube 3 มิติ)
+    // 2. Vertices (3D Cubes)
     float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
          0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
@@ -123,18 +126,15 @@ int main()
     glGenBuffers(1, &VBO);
 
     glBindVertexArray(VAO);
-
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    // texture coord attribute
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    // 5. LOAD TEXTURE
+    // 3. Texture setup
     unsigned int texture;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
@@ -154,16 +154,12 @@ int main()
         glTexImage2D(GL_TEXTURE_2D, 0, format, imgWidth, imgHeight, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
     stbi_image_free(data);
 
     ourShader.use();
     ourShader.setInt("texture1", 0);
 
-    // 6. INITIALIZE IMGUI
+    // 4. ImGui Setup
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -173,69 +169,58 @@ int main()
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
-    // Dynamic Variables
     float clearColor[4] = { 0.10f, 0.10f, 0.12f, 1.0f };
     bool wireframemode = false;
-    bool showMultipleCubes = true;
-    float fov = 45.0f;
-    float cameraZ = -3.0f;
 
-    // 🌟 ตัวแปรสำหรับควบคุมการหมุน (Rotate X, Y, Z)
-    bool autoRotate = false;
-    float rotateX = 0.0f;
-    float rotateY = 0.0f;
-    float rotateZ = 0.0f;
-
-    // MAIN RENDER LOOP
+    // RENDER LOOP
     while (!glfwWindowShouldClose(window))
     {
+        // 🌟 คำนวณ Delta Time เพื่อให้กล้องเคลื่อนที่ด้วยความเร็วสม่ำเสมอทุก FPS
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
         glfwPollEvents();
         processInput(window);
 
-        // --- Start ImGui Frame ---
+        // ImGui Frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
         {
-            ImGui::Begin("Coordinate Systems Control (3D)");
-            ImGui::ColorEdit4("Background Color", clearColor);
-            ImGui::Checkbox("Wireframe Mode", &wireframemode);
-            ImGui::Checkbox("Show 10 Cubes", &showMultipleCubes);
+            ImGui::Begin("Camera & Scene Control");
+            ImGui::ColorEdit4("Background", clearColor);
+            ImGui::Checkbox("Wireframe", &wireframemode);
             ImGui::Separator();
 
-            // 🌟 UI สำหรับควบคุมการหมุน
-            ImGui::Text("Rotation Control");
-            ImGui::Checkbox("Auto Rotate (Y-Axis)", &autoRotate);
+            // UI ควบคุม Camera
+            ImGui::Text("Camera Status & Settings");
+            ImGui::Text("Pos: (%.2f, %.2f, %.2f)", camera.Position.x, camera.Position.y, camera.Position.z);
+            ImGui::Text("Yaw: %.1f | Pitch: %.1f", camera.Yaw, camera.Pitch);
+            ImGui::SliderFloat("Camera Speed", &camera.MovementSpeed, 0.5f, 15.0f);
+            ImGui::SliderFloat("Mouse Sensitivity", &camera.MouseSensitivity, 0.01f, 0.5f);
+            ImGui::SliderFloat("FOV (Zoom)", &camera.Zoom, 1.0f, 90.0f);
 
-            if (!autoRotate)
+            if (ImGui::Button("Reset Camera Position"))
             {
-                ImGui::SliderFloat("Rotate X", &rotateX, 0.0f, 360.0f);
-                ImGui::SliderFloat("Rotate Y", &rotateY, 0.0f, 360.0f);
-                ImGui::SliderFloat("Rotate Z", &rotateZ, 0.0f, 360.0f);
-
-                if (ImGui::Button("Reset Rotation"))
-                {
-                    rotateX = 0.0f;
-                    rotateY = 0.0f;
-                    rotateZ = 0.0f;
-                }
+                camera.Position = glm::vec3(0.0f, 0.0f, 3.0f);
+                camera.Yaw = -90.0f;
+                camera.Pitch = 0.0f;
             }
 
             ImGui::Separator();
-            ImGui::Text("Camera & Projection");
-            ImGui::SliderFloat("FOV", &fov, 10.0f, 90.0f);
-            ImGui::SliderFloat("Camera Z Distance", &cameraZ, -15.0f, -1.0f);
+            ImGui::Text("Controls Tip:");
+            ImGui::TextColored(ImVec4(1, 1, 0, 1), "WASD / Space / Ctrl: Move Camera");
+            ImGui::TextColored(ImVec4(1, 1, 0, 1), "Right-Click + Drag: Look Around");
 
             ImGui::End();
         }
 
-        // ดึงขนาดหน้าจอจริง ณ Frame ปัจจุบัน
         int currentWidth, currentHeight;
         glfwGetFramebufferSize(window, &currentWidth, &currentHeight);
         glViewport(0, 0, currentWidth, currentHeight);
 
-        // Clear Buffers
         glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -249,55 +234,29 @@ int main()
 
         ourShader.use();
 
-        // คำนวณ Aspect Ratio
+        // 🌟 ดึง View Matrix และ Projection Matrix จาก Camera Class
         float aspectRatio = (currentHeight > 0) ? ((float)currentWidth / (float)currentHeight) : 1.0f;
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), aspectRatio, 0.1f, 100.0f);
+        glm::mat4 view = camera.GetViewMatrix();
 
-        // View & Projection Matrix
-        glm::mat4 view = glm::mat4(1.0f);
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, cameraZ));
-
-        glm::mat4 projection = glm::perspective(glm::radians(fov), aspectRatio, 0.1f, 100.0f);
-
-        ourShader.setMat4("view", view);
         ourShader.setMat4("projection", projection);
+        ourShader.setMat4("view", view);
 
         glBindVertexArray(VAO);
 
-        // 🌟 คำนวณมุมหมุนจริงตามเวลาหรือตามค่า Slider
-        float currentRotX = rotateX;
-        float currentRotY = autoRotate ? (float)glfwGetTime() * 50.0f : rotateY;
-        float currentRotZ = rotateZ;
-
-        if (showMultipleCubes)
-        {
-            for (unsigned int i = 0; i < 10; i++)
-            {
-                glm::mat4 model = glm::mat4(1.0f);
-                model = glm::translate(model, cubePositions[i]);
-
-                // 🌟 ประยุกต์ใช้การหมุนทั้ง X, Y, Z
-                model = glm::rotate(model, glm::radians(currentRotX), glm::vec3(1.0f, 0.0f, 0.0f));
-                model = glm::rotate(model, glm::radians(currentRotY + (i * 20.0f)), glm::vec3(0.0f, 1.0f, 0.0f));
-                model = glm::rotate(model, glm::radians(currentRotZ), glm::vec3(0.0f, 0.0f, 1.0f));
-
-                ourShader.setMat4("model", model);
-                glDrawArrays(GL_TRIANGLES, 0, 36);
-            }
-        }
-        else
+        // Draw 10 Cubes
+        for (unsigned int i = 0; i < 10; i++)
         {
             glm::mat4 model = glm::mat4(1.0f);
-
-            // 🌟 หมุนตามแกน X, Y, Z สำหรับกล่องเดียว
-            model = glm::rotate(model, glm::radians(currentRotX), glm::vec3(1.0f, 0.0f, 0.0f));
-            model = glm::rotate(model, glm::radians(currentRotY), glm::vec3(0.0f, 1.0f, 0.0f));
-            model = glm::rotate(model, glm::radians(currentRotZ), glm::vec3(0.0f, 0.0f, 1.0f));
-
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 20.0f * i;
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
             ourShader.setMat4("model", model);
+
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
-        // --- RENDER IMGUI ---
+        // Render ImGui
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -305,7 +264,6 @@ int main()
         glfwSwapBuffers(window);
     }
 
-    // CLEANUP
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
@@ -319,13 +277,59 @@ int main()
     return 0;
 }
 
+// 🌟 ระบบควบคุมกล้องด้วยปุ่มกด
+void processInput(GLFWwindow* window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        camera.ProcessKeyboard(FORWARD, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        camera.ProcessKeyboard(BACKWARD, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        camera.ProcessKeyboard(LEFT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        camera.ProcessKeyboard(RIGHT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        camera.ProcessKeyboard(UP, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+        camera.ProcessKeyboard(DOWN, deltaTime);
+}
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
 
-void processInput(GLFWwindow* window)
+// 🌟 หันมุมกล้องเมื่อ "คลิกขวาค้างไว้แล้วลากเมาส์"
+void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+    float xpos = static_cast<float>(xposIn);
+    float ypos = static_cast<float>(yposIn);
+
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos; // กลับทิศทาง Y เนื่องจากจุด (0,0) อยู่มุมซ้ายบน
+
+    lastX = xpos;
+    lastY = ypos;
+
+    // หมุนเฉพาะตอนกด "คลิกขวา" ค้างไว้ เพื่อไม่ให้ตีกับ UI ของ ImGui
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+    {
+        camera.ProcessMouseMovement(xoffset, yoffset);
+    }
+}
+
+// 🌟 Zoom กล้องด้วยการหมุนลูกกลิ้งเมาส์
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }

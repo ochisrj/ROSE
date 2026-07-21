@@ -12,7 +12,7 @@ void menubar::Draw(GLFWwindow* window)
 	if (ImGui::BeginMainMenuBar())
 	{
 		FileMenu::DrawMenu();
-
+		MeshMenu::DrawMenu();
 		ImGui::EndMainMenuBar();
 	}
 }

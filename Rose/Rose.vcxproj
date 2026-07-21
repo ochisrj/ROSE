@@ -135,8 +135,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="camera.h" />
     <ClInclude Include="file.h" />
     <ClInclude Include="menubar.h" />
+    <ClInclude Include="mesh.h" />
     <ClInclude Include="vendor\imgui\backends\imgui_impl_glfw.h" />
     <ClInclude Include="vendor\imgui\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="vendor\imgui\backends\imgui_impl_opengl3_loader.h" />
@@ -149,9 +151,11 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="file.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menubar.cpp" />
+    <ClCompile Include="mesh.cpp" />
     <ClCompile Include="shaderclass.cpp" />
     <ClCompile Include="shaderclass.h" />
     <ClCompile Include="stb.cpp" />
