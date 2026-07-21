@@ -19,6 +19,9 @@
     <Filter Include="Header Files\menu">
       <UniqueIdentifier>{c6363685-cc29-42f1-8d0c-449cffb2f533}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{29c64a4f-11ba-4def-9ddc-ff1295749c79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vendor\imgui\imconfig.h">
@@ -95,6 +98,12 @@
     <ClCompile Include="stb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="shaderclass.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="shaderclass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="20011.jpg">
@@ -103,5 +112,13 @@
     <Image Include="CU_sub-logo.png">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\shader.frag">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\shader.vert">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

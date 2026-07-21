@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)vendor\stb;$(ProjectDir)vendor\glm;$(ProjectDir)vendor\imgui\backends;$(ProjectDir)vendor\imgui;$(ProjectDir)vendor\glad\include;$(ProjectDir)vendor\glfw\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Shader;$(ProjectDir)vendor;$(ProjectDir)vendor\glm;$(ProjectDir)vendor\glm\gtc;$(ProjectDir)vendor\stb;$(ProjectDir)vendor\imgui\backends;$(ProjectDir)vendor\imgui;$(ProjectDir)vendor\glad\include;$(ProjectDir)vendor\glfw\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)vendor\glfw\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)vendor\stb;$(ProjectDir)vendor\glm;$(ProjectDir)vendor\imgui\backends;$(ProjectDir)vendor\imgui;$(ProjectDir)vendor\glad\include;$(ProjectDir)vendor\glfw\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Shader;$(ProjectDir)vendor;$(ProjectDir)vendor\glm;$(ProjectDir)vendor\glm\gtc;$(ProjectDir)vendor\stb;$(ProjectDir)vendor\imgui\backends;$(ProjectDir)vendor\imgui;$(ProjectDir)vendor\glad\include;$(ProjectDir)vendor\glfw\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)vendor\glfw\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -110,6 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,6 +126,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -150,6 +152,8 @@
     <ClCompile Include="file.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menubar.cpp" />
+    <ClCompile Include="shaderclass.cpp" />
+    <ClCompile Include="shaderclass.h" />
     <ClCompile Include="stb.cpp" />
     <ClCompile Include="vendor\glad\src\glad.c" />
     <ClCompile Include="vendor\imgui\backends\imgui_impl_glfw.cpp" />
@@ -163,6 +167,10 @@
   <ItemGroup>
     <Image Include="20011.jpg" />
     <Image Include="CU_sub-logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\shader.frag" />
+    <None Include="Shader\shader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
