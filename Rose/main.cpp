@@ -7,8 +7,7 @@
 #include "imgui_impl_opengl3.h"
 
 #include "menubar.h"
-#include "stb_image.h"
-#include "stb_image_write.h"
+#include "stb_image.h" 
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -20,7 +19,7 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
-// Window dimensions
+// ขนาดเริ่มต้นตอนเปิดโปรแกรม
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
@@ -55,13 +54,13 @@ int main()
         return -1;
     }
 
-    // 🌟 สำคัญมากสำหรับ 3D: เปิดใช้งาน Depth Testing เพื่อไม่ให้พิกเซลด้านหลังวาดทับด้านหน้า
+    // เปิดใช้งาน Depth Testing สำหรับงาน 3D
     glEnable(GL_DEPTH_TEST);
 
     // 3. COMPILE SHADERS
     Shader ourShader("Shader/shader.vert", "Shader/shader.frag");
 
-    // 4. VERTEX DATA (กล่อง Cube 3 มิติ มีทั้งหมด 36 จุด)
+    // 4. VERTEX DATA (กล่อง Cube 3 มิติ)
     float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
          0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
@@ -106,7 +105,6 @@ int main()
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
 
-    // ตำแหน่งของ Cubes ทั้ง 10 กล่องตามตัวอย่างในเว็บ
     glm::vec3 cubePositions[] = {
         glm::vec3(0.0f,  0.0f,  0.0f),
         glm::vec3(2.0f,  5.0f, -15.0f),
@@ -129,10 +127,10 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    // position attribute (x, y, z)
+    // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    // texture coord attribute (u, v)
+    // texture coord attribute
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
@@ -146,14 +144,14 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    int width, height, nrChannels;
+    int imgWidth, imgHeight, nrChannels;
     stbi_set_flip_vertically_on_load(true);
-    unsigned char* data = stbi_load("20011.jpg", &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load("20011.jpg", &imgWidth, &imgHeight, &nrChannels, 0);
 
     if (data)
     {
         GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, imgWidth, imgHeight, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -182,6 +180,12 @@ int main()
     float fov = 45.0f;
     float cameraZ = -3.0f;
 
+    // 🌟 ตัวแปรสำหรับควบคุมการหมุน (Rotate X, Y, Z)
+    bool autoRotate = false;
+    float rotateX = 0.0f;
+    float rotateY = 0.0f;
+    float rotateZ = 0.0f;
+
     // MAIN RENDER LOOP
     while (!glfwWindowShouldClose(window))
     {
@@ -200,6 +204,25 @@ int main()
             ImGui::Checkbox("Show 10 Cubes", &showMultipleCubes);
             ImGui::Separator();
 
+            // 🌟 UI สำหรับควบคุมการหมุน
+            ImGui::Text("Rotation Control");
+            ImGui::Checkbox("Auto Rotate (Y-Axis)", &autoRotate);
+
+            if (!autoRotate)
+            {
+                ImGui::SliderFloat("Rotate X", &rotateX, 0.0f, 360.0f);
+                ImGui::SliderFloat("Rotate Y", &rotateY, 0.0f, 360.0f);
+                ImGui::SliderFloat("Rotate Z", &rotateZ, 0.0f, 360.0f);
+
+                if (ImGui::Button("Reset Rotation"))
+                {
+                    rotateX = 0.0f;
+                    rotateY = 0.0f;
+                    rotateZ = 0.0f;
+                }
+            }
+
+            ImGui::Separator();
             ImGui::Text("Camera & Projection");
             ImGui::SliderFloat("FOV", &fov, 10.0f, 90.0f);
             ImGui::SliderFloat("Camera Z Distance", &cameraZ, -15.0f, -1.0f);
@@ -207,10 +230,13 @@ int main()
             ImGui::End();
         }
 
-        // --- RENDER SCENE ---
-        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+        // ดึงขนาดหน้าจอจริง ณ Frame ปัจจุบัน
+        int currentWidth, currentHeight;
+        glfwGetFramebufferSize(window, &currentWidth, &currentHeight);
+        glViewport(0, 0, currentWidth, currentHeight);
+
+        // Clear Buffers
         glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
-        // 🌟 ต้อง glClear ทั้ง COLOR BUFFER และ DEPTH BUFFER
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         if (wireframemode)
@@ -222,50 +248,52 @@ int main()
         glBindTexture(GL_TEXTURE_2D, texture);
 
         ourShader.use();
-        menubar::Draw(window);
 
-        // 7. MATRIX CALCULATIONS (3D Coordinate Systems)
+        // คำนวณ Aspect Ratio
+        float aspectRatio = (currentHeight > 0) ? ((float)currentWidth / (float)currentHeight) : 1.0f;
 
-        // A. View Matrix (ถอยกล้องออกมาดูฉาก)
+        // View & Projection Matrix
         glm::mat4 view = glm::mat4(1.0f);
         view = glm::translate(view, glm::vec3(0.0f, 0.0f, cameraZ));
 
-        // B. Projection Matrix (Perspective 3D Projection)
-        glm::mat4 projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(fov), aspectRatio, 0.1f, 100.0f);
 
-        // ส่ง View & Projection ไปให้ Shader
         ourShader.setMat4("view", view);
         ourShader.setMat4("projection", projection);
 
         glBindVertexArray(VAO);
 
-        // C. Model Matrix & Drawing
+        // 🌟 คำนวณมุมหมุนจริงตามเวลาหรือตามค่า Slider
+        float currentRotX = rotateX;
+        float currentRotY = autoRotate ? (float)glfwGetTime() * 50.0f : rotateY;
+        float currentRotZ = rotateZ;
+
         if (showMultipleCubes)
         {
-            // วาดกล่องกระจาย 10 กล่อง
             for (unsigned int i = 0; i < 10; i++)
             {
                 glm::mat4 model = glm::mat4(1.0f);
                 model = glm::translate(model, cubePositions[i]);
 
-                // ให้กล่องบางกล่องหมุนตามเวลา
-                float angle = 20.0f * i;
-                if (i % 3 == 0) // ทุกๆ 3 กล่องให้หมุนตามเวลา
-                    angle = (float)glfwGetTime() * 25.0f;
+                // 🌟 ประยุกต์ใช้การหมุนทั้ง X, Y, Z
+                model = glm::rotate(model, glm::radians(currentRotX), glm::vec3(1.0f, 0.0f, 0.0f));
+                model = glm::rotate(model, glm::radians(currentRotY + (i * 20.0f)), glm::vec3(0.0f, 1.0f, 0.0f));
+                model = glm::rotate(model, glm::radians(currentRotZ), glm::vec3(0.0f, 0.0f, 1.0f));
 
-                model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
                 ourShader.setMat4("model", model);
-
                 glDrawArrays(GL_TRIANGLES, 0, 36);
             }
         }
         else
         {
-            // วาดกล่องเดียวตรงกลาง
             glm::mat4 model = glm::mat4(1.0f);
-            model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-            ourShader.setMat4("model", model);
 
+            // 🌟 หมุนตามแกน X, Y, Z สำหรับกล่องเดียว
+            model = glm::rotate(model, glm::radians(currentRotX), glm::vec3(1.0f, 0.0f, 0.0f));
+            model = glm::rotate(model, glm::radians(currentRotY), glm::vec3(0.0f, 1.0f, 0.0f));
+            model = glm::rotate(model, glm::radians(currentRotZ), glm::vec3(0.0f, 0.0f, 1.0f));
+
+            ourShader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
