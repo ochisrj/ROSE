@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "imgui.h"
 #include "shaderclass.h"
+#include "sphere.h"
 
 enum class ShapeType {
     NONE,
@@ -29,22 +30,15 @@ private:
     static ShapeType currentShape;
     static void SelectShape(ShapeType type);
     static void ClearBuffers();
-    static void SetupSphereMesh();
 
-    // Menu Item Flags
     static bool Triangle;
     static bool Rectangle;
     static bool Circle;
     static bool Cube;
-    static bool Sphere;
+    static bool SphereMesh;
 
-    // Customization Variables
     static float color[4];
     static float rotation[3];
 
-    // OpenGL Buffer Objects
-    static unsigned int sphereVAO;
-    static unsigned int sphereVBO;
-    static unsigned int sphereEBO;
-    static int sphereIndexCount;
+    static Sphere sphereInstance;
 };

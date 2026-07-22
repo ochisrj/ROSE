@@ -15,8 +15,8 @@ public:
     static float rotateY;
     static float rotateZ;
 
-    // ฟังก์ชันวาด UI
     static void DrawWindow();
+    static void DrawGL();
     static float GetCurrentRotX() { return rotateX; }
     static float GetCurrentRotY();
     static float GetCurrentRotZ() { return rotateZ; }

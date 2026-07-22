@@ -114,10 +114,10 @@
     <ClInclude Include="viewport.h">
       <Filter>Header Files\viewport</Filter>
     </ClInclude>
-    <ClInclude Include="shape.h">
+    <ClInclude Include="sphere.h">
       <Filter>Header Files\menu\shape</Filter>
     </ClInclude>
-    <ClInclude Include="sphere.h">
+    <ClInclude Include="cube.h">
       <Filter>Header Files\menu\shape</Filter>
     </ClInclude>
   </ItemGroup>
@@ -188,10 +188,10 @@
     <ClCompile Include="viewport.cpp">
       <Filter>Source Files\viewport</Filter>
     </ClCompile>
-    <ClCompile Include="shape.cpp">
+    <ClCompile Include="sphere.cpp">
       <Filter>Source Files\menu\shape</Filter>
     </ClCompile>
-    <ClCompile Include="sphere.cpp">
+    <ClCompile Include="cube.cpp">
       <Filter>Source Files\menu\shape</Filter>
     </ClCompile>
   </ItemGroup>

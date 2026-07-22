@@ -16,5 +16,4 @@ void menubar::Draw(GLFWwindow* window)
         ImGui::EndMainMenuBar();
     }
 
-    MeshMenu::DrawWindow();
 }

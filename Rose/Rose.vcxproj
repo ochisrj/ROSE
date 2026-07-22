@@ -137,12 +137,12 @@
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="config_control.h" />
+    <ClInclude Include="cube.h" />
     <ClInclude Include="EBO.h" />
     <ClInclude Include="file.h" />
     <ClInclude Include="menubar.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="model.h" />
-    <ClInclude Include="shape.h" />
     <ClInclude Include="sphere.h" />
     <ClInclude Include="VAO.h" />
     <ClInclude Include="VBO.h" />
@@ -161,6 +161,7 @@
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="config_control.cpp" />
+    <ClCompile Include="cube.cpp" />
     <ClCompile Include="EBO.cpp" />
     <ClCompile Include="file.cpp" />
     <ClCompile Include="main.cpp" />
@@ -169,7 +170,6 @@
     <ClCompile Include="model.cpp" />
     <ClCompile Include="shaderclass.cpp" />
     <ClCompile Include="shaderclass.h" />
-    <ClCompile Include="shape.cpp" />
     <ClCompile Include="sphere.cpp" />
     <ClCompile Include="stb.cpp" />
     <ClCompile Include="VAO.cpp" />

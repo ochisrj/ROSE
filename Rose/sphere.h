@@ -1,17 +1,25 @@
 #pragma once
-#include "Shape.h"
-#include <vector>
 
-class SphereShape : public Shape {
-private:
-    unsigned int VAO = 0, VBO = 0, EBO = 0;
-    int indexCount = 0;
+#include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include "shaderclass.h"
 
+class Sphere
+{
 public:
-    SphereShape();
-    ~SphereShape();
+    Sphere();
+    ~Sphere();
 
-    void Init() override;
-    void Draw(Shader& shader) override;
-    void Cleanup() override;
+    void Init();
+    void Cleanup();
+    void Draw(Shader& shader, const float color[4], const float rotation[3]);
+
+private:
+    unsigned int VAO;
+    unsigned int VBO;
+    unsigned int EBO;
+    int indexCount;
+
+    void setupMesh();
 };

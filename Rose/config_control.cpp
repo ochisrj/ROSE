@@ -1,5 +1,6 @@
 ﻿#include "config_control.h"
 #include "camera.h"
+#include "mesh.h" // เพิ่ม include mesh.h
 #include "imgui.h"
 #include <GLFW/glfw3.h>
 
@@ -98,6 +99,9 @@ void ConfigControl::DrawWindow()
         camera.Yaw = -90.0f;
         camera.Pitch = 0.0f;
     }
+
+    // วาด Shape Customization รวมในหน้าต่างนี้
+    MeshMenu::DrawWindow();
 
     ImGui::End();
     ImGui::PopStyleVar(2);
