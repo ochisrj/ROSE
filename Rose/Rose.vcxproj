@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)Shader;$(ProjectDir)vendor;$(ProjectDir)vendor\glm;$(ProjectDir)vendor\glm\gtc;$(ProjectDir)vendor\stb;$(ProjectDir)vendor\imgui\backends;$(ProjectDir)vendor\imgui;$(ProjectDir)vendor\glad\include;$(ProjectDir)vendor\glfw\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)viewport;$(ProjectDir)src;$(ProjectDir)menu\model;$(ProjectDir)menu;$(ProjectDir)render;$(ProjectDir)Rose;$(ProjectDir)shader;$(ProjectDir)vendor;$(ProjectDir)vendor\glm;$(ProjectDir)vendor\glm\gtc;$(ProjectDir)vendor\stb;$(ProjectDir)vendor\imgui\backends;$(ProjectDir)vendor\imgui;$(ProjectDir)vendor\glad\include;$(ProjectDir)vendor\glfw\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)vendor\glfw\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)Shader;$(ProjectDir)vendor;$(ProjectDir)vendor\glm;$(ProjectDir)vendor\glm\gtc;$(ProjectDir)vendor\stb;$(ProjectDir)vendor\imgui\backends;$(ProjectDir)vendor\imgui;$(ProjectDir)vendor\glad\include;$(ProjectDir)vendor\glfw\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)viewport;$(ProjectDir)src;$(ProjectDir)menu\model;$(ProjectDir)menu;$(ProjectDir)render;$(ProjectDir)Rose;$(ProjectDir)shader;$(ProjectDir)vendor;$(ProjectDir)vendor\glm;$(ProjectDir)vendor\glm\gtc;$(ProjectDir)vendor\stb;$(ProjectDir)vendor\imgui\backends;$(ProjectDir)vendor\imgui;$(ProjectDir)vendor\glad\include;$(ProjectDir)vendor\glfw\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)vendor\glfw\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -135,17 +135,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="camera.h" />
-    <ClInclude Include="config_control.h" />
-    <ClInclude Include="cube.h" />
-    <ClInclude Include="EBO.h" />
-    <ClInclude Include="file.h" />
-    <ClInclude Include="menubar.h" />
-    <ClInclude Include="mesh.h" />
-    <ClInclude Include="model.h" />
-    <ClInclude Include="sphere.h" />
-    <ClInclude Include="VAO.h" />
-    <ClInclude Include="VBO.h" />
+    <ClInclude Include="menu\file.h" />
+    <ClInclude Include="menu\menubar.h" />
+    <ClInclude Include="menu\mesh.h" />
+    <ClInclude Include="menu\model\cube.h" />
+    <ClInclude Include="menu\model\sphere.h" />
+    <ClInclude Include="render\camera.h" />
+    <ClInclude Include="render\model.h" />
+    <ClInclude Include="render\shaderclass.h" />
+    <ClInclude Include="src\EBO.h" />
+    <ClInclude Include="src\VAO.h" />
+    <ClInclude Include="src\VBO.h" />
     <ClInclude Include="vendor\imgui\backends\imgui_impl_glfw.h" />
     <ClInclude Include="vendor\imgui\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="vendor\imgui\backends\imgui_impl_opengl3_loader.h" />
@@ -155,25 +155,23 @@
     <ClInclude Include="vendor\imgui\imstb_rectpack.h" />
     <ClInclude Include="vendor\imgui\imstb_textedit.h" />
     <ClInclude Include="vendor\imgui\imstb_truetype.h" />
-    <ClInclude Include="vendor\stb\stb_image.h" />
-    <ClInclude Include="viewport.h" />
+    <ClInclude Include="viewport\config_control.h" />
+    <ClInclude Include="viewport\viewport.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="camera.cpp" />
-    <ClCompile Include="config_control.cpp" />
-    <ClCompile Include="cube.cpp" />
-    <ClCompile Include="EBO.cpp" />
-    <ClCompile Include="file.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="menubar.cpp" />
-    <ClCompile Include="mesh.cpp" />
-    <ClCompile Include="model.cpp" />
-    <ClCompile Include="shaderclass.cpp" />
-    <ClCompile Include="shaderclass.h" />
-    <ClCompile Include="sphere.cpp" />
-    <ClCompile Include="stb.cpp" />
-    <ClCompile Include="VAO.cpp" />
-    <ClCompile Include="VBO.cpp" />
+    <ClCompile Include="menu\file.cpp" />
+    <ClCompile Include="menu\menubar.cpp" />
+    <ClCompile Include="menu\mesh.cpp" />
+    <ClCompile Include="menu\model\cube.cpp" />
+    <ClCompile Include="menu\model\sphere.cpp" />
+    <ClCompile Include="render\camera.cpp" />
+    <ClCompile Include="render\model.cpp" />
+    <ClCompile Include="render\shaderclass.cpp" />
+    <ClCompile Include="render\stb.cpp" />
+    <ClCompile Include="src\EBO.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\VAO.cpp" />
+    <ClCompile Include="src\VBO.cpp" />
     <ClCompile Include="vendor\glad\src\glad.c" />
     <ClCompile Include="vendor\imgui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="vendor\imgui\backends\imgui_impl_opengl3.cpp" />
@@ -182,7 +180,8 @@
     <ClCompile Include="vendor\imgui\imgui_draw.cpp" />
     <ClCompile Include="vendor\imgui\imgui_tables.cpp" />
     <ClCompile Include="vendor\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="viewport.cpp" />
+    <ClCompile Include="viewport\config_control.cpp" />
+    <ClCompile Include="viewport\viewport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="20011.jpg" />

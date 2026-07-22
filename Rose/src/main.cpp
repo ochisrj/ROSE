@@ -91,7 +91,7 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        menubar::Draw(window);
+        MenuBar::Draw(window);
         viewport::DrawWindow(window);
 
         ConfigControl::DrawWindow();

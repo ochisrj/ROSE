@@ -1,7 +1,8 @@
-#pragma once
+﻿#pragma once
 
 #include <iostream>
-#include <glfw/glfw3.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include "imgui.h"
 
@@ -10,7 +11,7 @@
 struct GLFWwindow;
 
 
-class viewport 
+class viewport
 {
 public:
 	static void DrawWindow(GLFWwindow* window);

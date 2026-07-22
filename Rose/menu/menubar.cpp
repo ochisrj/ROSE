@@ -7,7 +7,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-void menubar::Draw(GLFWwindow* window)
+void MenuBar::Draw(GLFWwindow * window)
 {
     if (ImGui::BeginMainMenuBar())
     {
@@ -16,4 +16,5 @@ void menubar::Draw(GLFWwindow* window)
         ImGui::EndMainMenuBar();
     }
 
+    MeshMenu::DrawWindow();
 }
