@@ -61,7 +61,7 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
 
-    Shader ourShader("Shader/shader.vert", "Shader/shader.frag");
+    Shader ourShader("shaders/shader.vert", "shaders/shader.frag");
 
     Cube cube;
     cube.Init("20011.jpg");

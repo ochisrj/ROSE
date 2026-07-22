@@ -204,11 +204,11 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\shader.frag">
-      <Filter>Resource Files\Shader</Filter>
+    <None Include="shaders\shader.frag">
+      <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="Shader\shader.vert">
-      <Filter>Resource Files\Shader</Filter>
+    <None Include="shaders\shader.vert">
+      <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>
 </Project>
