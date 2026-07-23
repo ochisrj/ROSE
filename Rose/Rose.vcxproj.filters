@@ -19,9 +19,6 @@
     <Filter Include="Header Files\menu">
       <UniqueIdentifier>{c6363685-cc29-42f1-8d0c-449cffb2f533}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Shader">
-      <UniqueIdentifier>{29c64a4f-11ba-4def-9ddc-ff1295749c79}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\texture">
       <UniqueIdentifier>{8791ee3a-7f4e-4d82-9969-3b5e448fe68e}</UniqueIdentifier>
     </Filter>
@@ -52,17 +49,11 @@
     <Filter Include="Source Files\menu\shape">
       <UniqueIdentifier>{a738f071-ef12-4d6e-b0a9-d941ea05f0f4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\shaders">
+      <UniqueIdentifier>{29c64a4f-11ba-4def-9ddc-ff1295749c79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="menubar.h">
-      <Filter>Header Files\menu</Filter>
-    </ClInclude>
-    <ClInclude Include="file.h">
-      <Filter>Header Files\menu</Filter>
-    </ClInclude>
-    <ClInclude Include="mesh.h">
-      <Filter>Header Files\menu</Filter>
-    </ClInclude>
     <ClInclude Include="vendor\imgui\imconfig.h">
       <Filter>Header Files\imgui</Filter>
     </ClInclude>
@@ -90,47 +81,47 @@
     <ClInclude Include="vendor\imgui\imstb_truetype.h">
       <Filter>Header Files\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="EBO.h">
+    <ClInclude Include="src\EBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VAO.h">
+    <ClInclude Include="src\VAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VBO.h">
+    <ClInclude Include="src\VBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="camera.h">
+    <ClInclude Include="render\camera.h">
       <Filter>Header Files\render</Filter>
     </ClInclude>
-    <ClInclude Include="model.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\stb\stb_image.h">
-      <Filter>Header Files\render</Filter>
-    </ClInclude>
-    <ClInclude Include="config_control.h">
-      <Filter>Header Files\viewport</Filter>
-    </ClInclude>
-    <ClInclude Include="viewport.h">
-      <Filter>Header Files\viewport</Filter>
-    </ClInclude>
-    <ClInclude Include="sphere.h">
+    <ClInclude Include="menu\model\cube.h">
       <Filter>Header Files\menu\shape</Filter>
     </ClInclude>
-    <ClInclude Include="cube.h">
+    <ClInclude Include="viewport\config_control.h">
+      <Filter>Header Files\viewport</Filter>
+    </ClInclude>
+    <ClInclude Include="menu\file.h">
+      <Filter>Header Files\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="menu\menubar.h">
+      <Filter>Header Files\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="menu\mesh.h">
+      <Filter>Header Files\menu</Filter>
+    </ClInclude>
+    <ClInclude Include="render\model.h">
+      <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\shaderclass.h">
+      <Filter>Header Files\render</Filter>
+    </ClInclude>
+    <ClInclude Include="menu\model\sphere.h">
       <Filter>Header Files\menu\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="viewport\viewport.h">
+      <Filter>Header Files\viewport</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="menubar.cpp">
-      <Filter>Source Files\menu</Filter>
-    </ClCompile>
-    <ClCompile Include="file.cpp">
-      <Filter>Source Files\menu</Filter>
-    </ClCompile>
-    <ClCompile Include="mesh.cpp">
-      <Filter>Source Files\menu</Filter>
-    </ClCompile>
     <ClCompile Include="vendor\imgui\imgui.cpp">
       <Filter>Source Files\imgui</Filter>
     </ClCompile>
@@ -152,47 +143,53 @@
     <ClCompile Include="vendor\imgui\imgui_widgets.cpp">
       <Filter>Source Files\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>Source Files\render</Filter>
-    </ClCompile>
-    <ClCompile Include="model.cpp">
-      <Filter>Source Files\render</Filter>
-    </ClCompile>
-    <ClCompile Include="shaderclass.cpp">
-      <Filter>Source Files\render</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files\src</Filter>
-    </ClCompile>
-    <ClCompile Include="VAO.cpp">
-      <Filter>Source Files\src</Filter>
-    </ClCompile>
-    <ClCompile Include="VBO.cpp">
-      <Filter>Source Files\src</Filter>
-    </ClCompile>
-    <ClCompile Include="EBO.cpp">
-      <Filter>Source Files\src</Filter>
-    </ClCompile>
     <ClCompile Include="vendor\glad\src\glad.c">
       <Filter>Source Files\src</Filter>
     </ClCompile>
-    <ClCompile Include="shaderclass.h">
-      <Filter>Header Files\render</Filter>
-    </ClCompile>
-    <ClCompile Include="stb.cpp">
+    <ClCompile Include="render\camera.cpp">
       <Filter>Source Files\render</Filter>
     </ClCompile>
-    <ClCompile Include="config_control.cpp">
+    <ClCompile Include="viewport\config_control.cpp">
       <Filter>Source Files\viewport</Filter>
     </ClCompile>
-    <ClCompile Include="viewport.cpp">
+    <ClCompile Include="menu\model\cube.cpp">
+      <Filter>Source Files\menu\shape</Filter>
+    </ClCompile>
+    <ClCompile Include="menu\file.cpp">
+      <Filter>Source Files\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="menu\menubar.cpp">
+      <Filter>Source Files\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="menu\mesh.cpp">
+      <Filter>Source Files\menu</Filter>
+    </ClCompile>
+    <ClCompile Include="render\model.cpp">
+      <Filter>Source Files\render</Filter>
+    </ClCompile>
+    <ClCompile Include="render\shaderclass.cpp">
+      <Filter>Source Files\render</Filter>
+    </ClCompile>
+    <ClCompile Include="menu\model\sphere.cpp">
+      <Filter>Source Files\menu\shape</Filter>
+    </ClCompile>
+    <ClCompile Include="render\stb.cpp">
+      <Filter>Source Files\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="viewport\viewport.cpp">
       <Filter>Source Files\viewport</Filter>
     </ClCompile>
-    <ClCompile Include="sphere.cpp">
-      <Filter>Source Files\menu\shape</Filter>
+    <ClCompile Include="src\VBO.cpp">
+      <Filter>Source Files\src</Filter>
     </ClCompile>
-    <ClCompile Include="cube.cpp">
-      <Filter>Source Files\menu\shape</Filter>
+    <ClCompile Include="src\EBO.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VAO.cpp">
+      <Filter>Source Files\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

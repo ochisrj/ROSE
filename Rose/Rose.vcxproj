@@ -188,8 +188,8 @@
     <Image Include="CU_sub-logo.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shader\shader.frag" />
-    <None Include="Shader\shader.vert" />
+    <None Include="shaders\shader.frag" />
+    <None Include="shaders\shader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
